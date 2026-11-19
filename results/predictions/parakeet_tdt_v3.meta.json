@@ -1,0 +1,43 @@
+{
+  "kind": "baseline",
+  "system": "parakeet_tdt_v3",
+  "family": "Pretrained: NVIDIA Parakeet TDT (transducer)",
+  "checkpoint": "nvidia/parakeet-tdt-0.6b-v3",
+  "revision": "541d1f99c6b0c3cd0b11a95167540bb8edefd82b",
+  "language": "automatic (the model has no language setting; Croatian is supported, model card)",
+  "backend": "nemo",
+  "decoding": "NeMo model default (greedy_batch)",
+  "transcribe_kwargs": {},
+  "gpu": "Tesla T4",
+  "precision": "fp32",
+  "batch_size": 16,
+  "audio_seconds": 23822.8,
+  "compute_seconds": 177.63,
+  "timing_split": "test",
+  "timing": {
+    "dev": {
+      "clips": 2254,
+      "audio_seconds": 22749.66,
+      "compute_seconds": 169.45
+    },
+    "test": {
+      "clips": 2021,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 177.63
+    },
+    "silence": {
+      "clips": 60,
+      "audio_seconds": 358.31,
+      "compute_seconds": 2.94
+    }
+  },
+  "seed": 20261119,
+  "versions": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "transformers": "4.57.6",
+    "nemo_toolkit": "2.7.3",
+    "huggingface_hub": "0.36.2"
+  },
+  "limit": null
+}

@@ -1,0 +1,2163 @@
+{
+  "canary_1b_v2": {
+    "clips": 2021,
+    "ref_words": 53454,
+    "wer": 0.056403636771803795,
+    "wer_ci95": [
+      0.05373687668851759,
+      0.05887074036587469
+    ],
+    "cer": 0.020731153094770142,
+    "cer_ci95": [
+      0.01948639016220866,
+      0.021990461237472413
+    ],
+    "substitutions": 1900,
+    "deletions": 709,
+    "insertions": 406,
+    "categories": {
+      "all": {
+        "recall": 0.9511916788266547,
+        "ref_words": 53454
+      },
+      "name": {
+        "recall": 0.7609475951184493,
+        "ref_words": 1393
+      },
+      "negation": {
+        "recall": 0.9728370221327968,
+        "ref_words": 994
+      },
+      "most_missed_names": [
+        [
+          "rh",
+          95
+        ],
+        [
+          "a",
+          44
+        ],
+        [
+          "hdz",
+          21
+        ],
+        [
+          "eur",
+          15
+        ],
+        [
+          "u",
+          9
+        ],
+        [
+          "hs",
+          6
+        ],
+        [
+          "bih",
+          6
+        ],
+        [
+          "htv",
+          5
+        ],
+        [
+          "pdv",
+          4
+        ],
+        [
+          "bdp",
+          4
+        ]
+      ]
+    },
+    "subgroups": {
+      "speaking_rate": {
+        "slow": {
+          "clips": 674,
+          "ref_words": 15781,
+          "wer": 0.055636524935048476,
+          "wer_ci95": [
+            0.05089908995499983,
+            0.060377444611765634
+          ],
+          "cer": 0.020287952063471514,
+          "cer_ci95": [
+            0.01797629183465571,
+            0.02265904930847448
+          ],
+          "substitutions": 572,
+          "deletions": 174,
+          "insertions": 132
+        },
+        "medium": {
+          "clips": 670,
+          "ref_words": 19767,
+          "wer": 0.05483887286892295,
+          "wer_ci95": [
+            0.05062436423585534,
+            0.058921332658461424
+          ],
+          "cer": 0.020776601910145364,
+          "cer_ci95": [
+            0.018656683404130656,
+            0.022914495484017746
+          ],
+          "substitutions": 679,
+          "deletions": 257,
+          "insertions": 148
+        },
+        "fast": {
+          "clips": 677,
+          "ref_words": 17906,
+          "wer": 0.05880710376410142,
+          "wer_ci95": [
+            0.05415829972710297,
+            0.06333289270187394
+          ],
+          "cer": 0.021134020618556702,
+          "cer_ci95": [
+            0.01905762605373365,
+            0.02328392027482016
+          ],
+          "substitutions": 649,
+          "deletions": 278,
+          "insertions": 126
+        }
+      },
+      "gender": {
+        "F": {
+          "clips": 778,
+          "ref_words": 20365,
+          "wer": 0.04934937392585318,
+          "wer_ci95": [
+            0.04568871732273315,
+            0.05307091631361996
+          ],
+          "cer": 0.01619913380163139,
+          "cer_ci95": [
+            0.01459673153958605,
+            0.017933345971617585
+          ],
+          "substitutions": 678,
+          "deletions": 188,
+          "insertions": 139
+        },
+        "M": {
+          "clips": 649,
+          "ref_words": 16670,
+          "wer": 0.06436712657468506,
+          "wer_ci95": [
+            0.05987567108703122,
+            0.06944395701167669
+          ],
+          "cer": 0.024957221746908297,
+          "cer_ci95": [
+            0.02241886846475672,
+            0.02764596891600204
+          ],
+          "substitutions": 659,
+          "deletions": 272,
+          "insertions": 142
+        },
+        "unknown": {
+          "clips": 594,
+          "ref_words": 16419,
+          "wer": 0.057068030939764904,
+          "wer_ci95": [
+            0.05219501184490467,
+            0.06188692073083073
+          ],
+          "cer": 0.02222749715153817,
+          "cer_ci95": [
+            0.019889258384776523,
+            0.024446321753340213
+          ],
+          "substitutions": 563,
+          "deletions": 249,
+          "insertions": 125
+        }
+      },
+      "clip_length": {
+        "0-5 s": {
+          "clips": 353,
+          "ref_words": 2620,
+          "wer": 0.05877862595419847,
+          "wer_ci95": [
+            0.05005726479943643,
+            0.06833481291630361
+          ],
+          "cer": 0.019821605550049554,
+          "cer_ci95": [
+            0.015599779288998495,
+            0.02438654374505133
+          ],
+          "substitutions": 104,
+          "deletions": 32,
+          "insertions": 18
+        },
+        "5-10 s": {
+          "clips": 565,
+          "ref_words": 10174,
+          "wer": 0.0549439748378219,
+          "wer_ci95": [
+            0.04973738469172754,
+            0.060918053564379064
+          ],
+          "cer": 0.017755012255672175,
+          "cer_ci95": [
+            0.015635557779255505,
+            0.020134704583780673
+          ],
+          "substitutions": 374,
+          "deletions": 124,
+          "insertions": 61
+        },
+        "10-20 s": {
+          "clips": 807,
+          "ref_words": 25601,
+          "wer": 0.05577907113003398,
+          "wer_ci95": [
+            0.052353255534726105,
+            0.05941176521525086
+          ],
+          "cer": 0.020442784089169243,
+          "cer_ci95": [
+            0.018707703142347463,
+            0.02234206655632525
+          ],
+          "substitutions": 885,
+          "deletions": 344,
+          "insertions": 199
+        },
+        ">= 20 s": {
+          "clips": 296,
+          "ref_words": 15059,
+          "wer": 0.058038382362706684,
+          "wer_ci95": [
+            0.05265557252438177,
+            0.06379891483804456
+          ],
+          "cer": 0.023353412187203125,
+          "cer_ci95": [
+            0.020545485225766647,
+            0.026443095915026433
+          ],
+          "substitutions": 537,
+          "deletions": 209,
+          "insertions": 128
+        }
+      }
+    },
+    "subgroup_definition": {
+      "speaking_rate_borders_wps": [
+        2.095,
+        2.451
+      ]
+    },
+    "rtf": 0.03257593565827695,
+    "rtfx": 30.697506603955933,
+    "silence": {
+      "clips": 60,
+      "clips_with_output": 2,
+      "words_emitted": 2,
+      "seconds": 358.31
+    },
+    "meta": {
+      "kind": "baseline",
+      "system": "canary_1b_v2",
+      "family": "Pretrained: NVIDIA Canary (attention encoder-decoder)",
+      "checkpoint": "nvidia/canary-1b-v2",
+      "revision": "d455706339a6b32e1aa40f82c713a482a0c938e2",
+      "language": "hr",
+      "backend": "nemo",
+      "decoding": "NeMo model default (beam)",
+      "transcribe_kwargs": {
+        "source_lang": "hr",
+        "target_lang": "hr"
+      },
+      "gpu": "Tesla T4",
+      "precision": "fp32",
+      "batch_size": 16,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 776.05,
+      "timing_split": "test",
+      "timing": {
+        "dev": {
+          "clips": 2254,
+          "audio_seconds": 22749.66,
+          "compute_seconds": 706.62
+        },
+        "test": {
+          "clips": 2021,
+          "audio_seconds": 23822.8,
+          "compute_seconds": 776.05
+        },
+        "silence": {
+          "clips": 60,
+          "audio_seconds": 358.31,
+          "compute_seconds": 4.04
+        }
+      },
+      "seed": 20261119,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.11.0+cu130",
+        "transformers": "4.57.6",
+        "nemo_toolkit": "2.7.3",
+        "huggingface_hub": "0.36.2"
+      },
+      "limit": null
+    }
+  },
+  "nemo_hr_conformer_ctc": {
+    "clips": 2021,
+    "ref_words": 53454,
+    "wer": 0.0571893590750926,
+    "wer_ci95": [
+      0.054554467357604164,
+      0.059966785796968236
+    ],
+    "cer": 0.023617283732020704,
+    "cer_ci95": [
+      0.022166415869139425,
+      0.025047813216307863
+    ],
+    "substitutions": 1812,
+    "deletions": 705,
+    "insertions": 540,
+    "categories": {
+      "all": {
+        "recall": 0.952912784824335,
+        "ref_words": 53454
+      },
+      "name": {
+        "recall": 0.6776740847092606,
+        "ref_words": 1393
+      },
+      "negation": {
+        "recall": 0.9798792756539235,
+        "ref_words": 994
+      },
+      "most_missed_names": [
+        [
+          "rh",
+          95
+        ],
+        [
+          "a",
+          72
+        ],
+        [
+          "hdz",
+          21
+        ],
+        [
+          "u",
+          18
+        ],
+        [
+          "eur",
+          15
+        ],
+        [
+          "uskok",
+          11
+        ],
+        [
+          "eu",
+          11
+        ],
+        [
+          "om",
+          6
+        ],
+        [
+          "hs",
+          6
+        ],
+        [
+          "bih",
+          6
+        ]
+      ]
+    },
+    "subgroups": {
+      "speaking_rate": {
+        "slow": {
+          "clips": 674,
+          "ref_words": 15781,
+          "wer": 0.05848805525632089,
+          "wer_ci95": [
+            0.05319928679566948,
+            0.06365774608364648
+          ],
+          "cer": 0.02557724494419426,
+          "cer_ci95": [
+            0.022411690821324742,
+            0.028760076439801247
+          ],
+          "substitutions": 568,
+          "deletions": 151,
+          "insertions": 204
+        },
+        "medium": {
+          "clips": 670,
+          "ref_words": 19767,
+          "wer": 0.05544594526230586,
+          "wer_ci95": [
+            0.05122498029754405,
+            0.05970332295643635
+          ],
+          "cer": 0.023110694749878927,
+          "cer_ci95": [
+            0.02063820709117917,
+            0.025680796348977516
+          ],
+          "substitutions": 645,
+          "deletions": 261,
+          "insertions": 190
+        },
+        "fast": {
+          "clips": 677,
+          "ref_words": 17906,
+          "wer": 0.05796939573327376,
+          "wer_ci95": [
+            0.05325974366603793,
+            0.06265809158560902
+          ],
+          "cer": 0.022203130966017563,
+          "cer_ci95": [
+            0.019825096452875477,
+            0.024435494240904743
+          ],
+          "substitutions": 599,
+          "deletions": 293,
+          "insertions": 146
+        }
+      },
+      "gender": {
+        "F": {
+          "clips": 778,
+          "ref_words": 20365,
+          "wer": 0.04930027007120059,
+          "wer_ci95": [
+            0.04536105225209888,
+            0.053319541018977866
+          ],
+          "cer": 0.019956230965826483,
+          "cer_ci95": [
+            0.01764610472571091,
+            0.022391014661998266
+          ],
+          "substitutions": 625,
+          "deletions": 200,
+          "insertions": 179
+        },
+        "M": {
+          "clips": 649,
+          "ref_words": 16670,
+          "wer": 0.061487702459508096,
+          "wer_ci95": [
+            0.056625358714011975,
+            0.0665861218132205
+          ],
+          "cer": 0.025871120790231003,
+          "cer_ci95": [
+            0.02301829066148529,
+            0.028769744044253736
+          ],
+          "substitutions": 616,
+          "deletions": 247,
+          "insertions": 162
+        },
+        "unknown": {
+          "clips": 594,
+          "ref_words": 16419,
+          "wer": 0.06261039040136428,
+          "wer_ci95": [
+            0.05731666420781757,
+            0.06762105625933036
+          ],
+          "cer": 0.025958982149639195,
+          "cer_ci95": [
+            0.022973686020005293,
+            0.028760208237453965
+          ],
+          "substitutions": 571,
+          "deletions": 258,
+          "insertions": 199
+        }
+      },
+      "clip_length": {
+        "0-5 s": {
+          "clips": 353,
+          "ref_words": 2620,
+          "wer": 0.05877862595419847,
+          "wer_ci95": [
+            0.04914035380603416,
+            0.06930380718729902
+          ],
+          "cer": 0.021865708622398415,
+          "cer_ci95": [
+            0.01694096965687719,
+            0.027492552000543128
+          ],
+          "substitutions": 92,
+          "deletions": 37,
+          "insertions": 25
+        },
+        "5-10 s": {
+          "clips": 565,
+          "ref_words": 10174,
+          "wer": 0.058482406133280915,
+          "wer_ci95": [
+            0.05300061176110072,
+            0.0649217340182642
+          ],
+          "cer": 0.02003331028847967,
+          "cer_ci95": [
+            0.017192118603534017,
+            0.023433242135789286
+          ],
+          "substitutions": 376,
+          "deletions": 145,
+          "insertions": 74
+        },
+        "10-20 s": {
+          "clips": 807,
+          "ref_words": 25601,
+          "wer": 0.05531033943986563,
+          "wer_ci95": [
+            0.05151763220918419,
+            0.059527354648571854
+          ],
+          "cer": 0.024258198854763144,
+          "cer_ci95": [
+            0.02206094625251139,
+            0.02682265732714687
+          ],
+          "substitutions": 831,
+          "deletions": 340,
+          "insertions": 245
+        },
+        ">= 20 s": {
+          "clips": 296,
+          "ref_words": 15059,
+          "wer": 0.05923368085530248,
+          "wer_ci95": [
+            0.0543735405279425,
+            0.06428332384722617
+          ],
+          "cer": 0.025201223522533903,
+          "cer_ci95": [
+            0.022247399371239374,
+            0.028269562554485567
+          ],
+          "substitutions": 513,
+          "deletions": 183,
+          "insertions": 196
+        }
+      }
+    },
+    "subgroup_definition": {
+      "speaking_rate_borders_wps": [
+        2.095,
+        2.451
+      ]
+    },
+    "rtf": 0.004164917641922864,
+    "rtfx": 240.10078613182824,
+    "silence": {
+      "clips": 60,
+      "clips_with_output": 12,
+      "words_emitted": 12,
+      "seconds": 358.31
+    },
+    "meta": {
+      "kind": "baseline",
+      "system": "nemo_hr_conformer_ctc",
+      "family": "Neural: CTC encoder (Conformer-CTC, published Croatian model)",
+      "checkpoint": "nvidia/stt_hr_conformer_ctc_large",
+      "revision": "d49f834e3afe270c11b16523be98b9f3f29fb406",
+      "language": "none (Croatian-only model)",
+      "backend": "nemo",
+      "decoding": "NeMo model default (greedy)",
+      "transcribe_kwargs": {},
+      "gpu": "Tesla T4",
+      "precision": "fp32",
+      "batch_size": 16,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 99.22,
+      "timing_split": "test",
+      "timing": {
+        "dev": {
+          "clips": 2254,
+          "audio_seconds": 22749.66,
+          "compute_seconds": 93.11
+        },
+        "test": {
+          "clips": 2021,
+          "audio_seconds": 23822.8,
+          "compute_seconds": 99.22
+        },
+        "silence": {
+          "clips": 60,
+          "audio_seconds": 358.31,
+          "compute_seconds": 1.73
+        }
+      },
+      "seed": 20261119,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.11.0+cu130",
+        "transformers": "4.57.6",
+        "nemo_toolkit": "2.7.3",
+        "huggingface_hub": "0.36.2"
+      },
+      "limit": null
+    }
+  },
+  "nemo_hr_conformer_transducer": {
+    "clips": 2021,
+    "ref_words": 53454,
+    "wer": 0.05859243461667976,
+    "wer_ci95": [
+      0.05593755349331092,
+      0.0611709992814739
+    ],
+    "cer": 0.024912796359580006,
+    "cer_ci95": [
+      0.02331743536329848,
+      0.026442128417280865
+    ],
+    "substitutions": 1757,
+    "deletions": 824,
+    "insertions": 551,
+    "categories": {
+      "all": {
+        "recall": 0.9517154936955139,
+        "ref_words": 53454
+      },
+      "name": {
+        "recall": 0.6841349605168701,
+        "ref_words": 1393
+      },
+      "negation": {
+        "recall": 0.9768611670020121,
+        "ref_words": 994
+      },
+      "most_missed_names": [
+        [
+          "rh",
+          95
+        ],
+        [
+          "a",
+          73
+        ],
+        [
+          "hdz",
+          21
+        ],
+        [
+          "u",
+          18
+        ],
+        [
+          "eur",
+          15
+        ],
+        [
+          "uskok",
+          11
+        ],
+        [
+          "eu",
+          7
+        ],
+        [
+          "om",
+          6
+        ],
+        [
+          "bih",
+          6
+        ],
+        [
+          "splitsko",
+          5
+        ]
+      ]
+    },
+    "subgroups": {
+      "speaking_rate": {
+        "slow": {
+          "clips": 674,
+          "ref_words": 15781,
+          "wer": 0.060325708130029784,
+          "wer_ci95": [
+            0.05555068965468442,
+            0.06551133075182398
+          ],
+          "cer": 0.027223213707775817,
+          "cer_ci95": [
+            0.023868799982582165,
+            0.030613423570153907
+          ],
+          "substitutions": 552,
+          "deletions": 198,
+          "insertions": 202
+        },
+        "medium": {
+          "clips": 670,
+          "ref_words": 19767,
+          "wer": 0.05843071786310518,
+          "wer_ci95": [
+            0.05382329938400921,
+            0.06290425368479774
+          ],
+          "cer": 0.024642939369159806,
+          "cer_ci95": [
+            0.022058420845885753,
+            0.02738995023366015
+          ],
+          "substitutions": 650,
+          "deletions": 296,
+          "insertions": 209
+        },
+        "fast": {
+          "clips": 677,
+          "ref_words": 17906,
+          "wer": 0.05724338210655646,
+          "wer_ci95": [
+            0.05302728244498791,
+            0.061759521797627386
+          ],
+          "cer": 0.022852233676975944,
+          "cer_ci95": [
+            0.020438269809076,
+            0.025255406507546756
+          ],
+          "substitutions": 555,
+          "deletions": 330,
+          "insertions": 140
+        }
+      },
+      "gender": {
+        "F": {
+          "clips": 778,
+          "ref_words": 20365,
+          "wer": 0.051166216547999015,
+          "wer_ci95": [
+            0.047160814955496136,
+            0.055376933697501754
+          ],
+          "cer": 0.020989241387753852,
+          "cer_ci95": [
+            0.018459526730627673,
+            0.023715135140031592
+          ],
+          "substitutions": 612,
+          "deletions": 243,
+          "insertions": 187
+        },
+        "M": {
+          "clips": 649,
+          "ref_words": 16670,
+          "wer": 0.06460707858428315,
+          "wer_ci95": [
+            0.05989974695922643,
+            0.06945157975588907
+          ],
+          "cer": 0.028107256747297193,
+          "cer_ci95": [
+            0.025028587052541316,
+            0.03131684951876955
+          ],
+          "substitutions": 605,
+          "deletions": 288,
+          "insertions": 184
+        },
+        "unknown": {
+          "clips": 594,
+          "ref_words": 16419,
+          "wer": 0.06169681466593581,
+          "wer_ci95": [
+            0.05674818508424183,
+            0.06643197718650506
+          ],
+          "cer": 0.02666160273452336,
+          "cer_ci95": [
+            0.023628957257436665,
+            0.029473002895679386
+          ],
+          "substitutions": 540,
+          "deletions": 293,
+          "insertions": 180
+        }
+      },
+      "clip_length": {
+        "0-5 s": {
+          "clips": 353,
+          "ref_words": 2620,
+          "wer": 0.059923664122137406,
+          "wer_ci95": [
+            0.05016499975445221,
+            0.07134959767357586
+          ],
+          "cer": 0.022732903865213084,
+          "cer_ci95": [
+            0.017542609349824385,
+            0.028456852215316394
+          ],
+          "substitutions": 91,
+          "deletions": 41,
+          "insertions": 25
+        },
+        "5-10 s": {
+          "clips": 565,
+          "ref_words": 10174,
+          "wer": 0.06044820129742481,
+          "wer_ci95": [
+            0.05499363882907528,
+            0.06720251642467276
+          ],
+          "cer": 0.022343033121739676,
+          "cer_ci95": [
+            0.01938858966724013,
+            0.025945206435610553
+          ],
+          "substitutions": 360,
+          "deletions": 172,
+          "insertions": 83
+        },
+        "10-20 s": {
+          "clips": 807,
+          "ref_words": 25601,
+          "wer": 0.05648216866528651,
+          "wer_ci95": [
+            0.052648731437241615,
+            0.06030162422526445
+          ],
+          "cer": 0.025574915025875004,
+          "cer_ci95": [
+            0.023140439768366734,
+            0.02796913645386395
+          ],
+          "substitutions": 803,
+          "deletions": 394,
+          "insertions": 249
+        },
+        ">= 20 s": {
+          "clips": 296,
+          "ref_words": 15059,
+          "wer": 0.060694601235141775,
+          "wer_ci95": [
+            0.05554283523435889,
+            0.06594937481133986
+          ],
+          "cer": 0.025858919082566892,
+          "cer_ci95": [
+            0.022774087313690926,
+            0.029168729638412206
+          ],
+          "substitutions": 503,
+          "deletions": 217,
+          "insertions": 194
+        }
+      }
+    },
+    "subgroup_definition": {
+      "speaking_rate_borders_wps": [
+        2.095,
+        2.451
+      ]
+    },
+    "rtf": 0.005093439897912924,
+    "rtfx": 196.3309708257788,
+    "silence": {
+      "clips": 60,
+      "clips_with_output": 1,
+      "words_emitted": 1,
+      "seconds": 358.31
+    },
+    "meta": {
+      "kind": "baseline",
+      "system": "nemo_hr_conformer_transducer",
+      "family": "Neural: transducer (Conformer-Transducer, published Croatian model)",
+      "checkpoint": "nvidia/stt_hr_conformer_transducer_large",
+      "revision": "65d62545d4a6bf479c22c9336e9640c7da7c1c51",
+      "language": "none (Croatian-only model)",
+      "backend": "nemo",
+      "decoding": "NeMo model default (greedy_batch)",
+      "transcribe_kwargs": {},
+      "gpu": "Tesla T4",
+      "precision": "fp32",
+      "batch_size": 16,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 121.34,
+      "timing_split": "test",
+      "timing": {
+        "dev": {
+          "clips": 2254,
+          "audio_seconds": 22749.66,
+          "compute_seconds": 111.86
+        },
+        "test": {
+          "clips": 2021,
+          "audio_seconds": 23822.8,
+          "compute_seconds": 121.34
+        },
+        "silence": {
+          "clips": 60,
+          "audio_seconds": 358.31,
+          "compute_seconds": 1.8
+        }
+      },
+      "seed": 20261119,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.11.0+cu130",
+        "transformers": "4.57.6",
+        "nemo_toolkit": "2.7.3",
+        "huggingface_hub": "0.36.2"
+      },
+      "limit": null
+    }
+  },
+  "nemo_hr_fastconformer_hybrid": {
+    "clips": 2021,
+    "ref_words": 53454,
+    "wer": 0.05191379503872488,
+    "wer_ci95": [
+      0.04953093204233167,
+      0.05419211649079863
+    ],
+    "cer": 0.019842885894552943,
+    "cer_ci95": [
+      0.018647658882085656,
+      0.021068634006077572
+    ],
+    "substitutions": 1614,
+    "deletions": 728,
+    "insertions": 433,
+    "categories": {
+      "all": {
+        "recall": 0.956186627754705,
+        "ref_words": 53454
+      },
+      "name": {
+        "recall": 0.7537688442211056,
+        "ref_words": 1393
+      },
+      "negation": {
+        "recall": 0.9748490945674044,
+        "ref_words": 994
+      },
+      "most_missed_names": [
+        [
+          "rh",
+          95
+        ],
+        [
+          "a",
+          40
+        ],
+        [
+          "hdz",
+          21
+        ],
+        [
+          "eur",
+          11
+        ],
+        [
+          "u",
+          9
+        ],
+        [
+          "hs",
+          6
+        ],
+        [
+          "bih",
+          6
+        ],
+        [
+          "hrvatske",
+          6
+        ],
+        [
+          "htv",
+          5
+        ],
+        [
+          "pdv",
+          4
+        ]
+      ]
+    },
+    "subgroups": {
+      "speaking_rate": {
+        "slow": {
+          "clips": 674,
+          "ref_words": 15781,
+          "wer": 0.05107407642101261,
+          "wer_ci95": [
+            0.04685109850991839,
+            0.05554820662957127
+          ],
+          "cer": 0.01845704298937518,
+          "cer_ci95": [
+            0.01653069929555728,
+            0.02050708003779282
+          ],
+          "substitutions": 498,
+          "deletions": 155,
+          "insertions": 153
+        },
+        "medium": {
+          "clips": 670,
+          "ref_words": 19767,
+          "wer": 0.05129761724085597,
+          "wer_ci95": [
+            0.047490115995235574,
+            0.05526027302568156
+          ],
+          "cer": 0.020125596424233283,
+          "cer_ci95": [
+            0.01794118367663181,
+            0.022259320160043016
+          ],
+          "substitutions": 588,
+          "deletions": 275,
+          "insertions": 151
+        },
+        "fast": {
+          "clips": 677,
+          "ref_words": 17906,
+          "wer": 0.05333407796269407,
+          "wer_ci95": [
+            0.04923021612778592,
+            0.05767403831722638
+          ],
+          "cer": 0.020933562428407788,
+          "cer_ci95": [
+            0.018973156799182298,
+            0.023104857225381546
+          ],
+          "substitutions": 528,
+          "deletions": 298,
+          "insertions": 129
+        }
+      },
+      "gender": {
+        "F": {
+          "clips": 778,
+          "ref_words": 20365,
+          "wer": 0.04335870365823717,
+          "wer_ci95": [
+            0.03988142041416929,
+            0.04699487702167747
+          ],
+          "cer": 0.015426288967448694,
+          "cer_ci95": [
+            0.013730002151739872,
+            0.017176031051879943
+          ],
+          "substitutions": 529,
+          "deletions": 219,
+          "insertions": 135
+        },
+        "M": {
+          "clips": 649,
+          "ref_words": 16670,
+          "wer": 0.06070785842831434,
+          "wer_ci95": [
+            0.056543837689168236,
+            0.06537637016701991
+          ],
+          "cer": 0.02368359648440538,
+          "cer_ci95": [
+            0.021314883265407404,
+            0.02614409111022462
+          ],
+          "substitutions": 576,
+          "deletions": 258,
+          "insertions": 178
+        },
+        "unknown": {
+          "clips": 594,
+          "ref_words": 16419,
+          "wer": 0.05359644314513673,
+          "wer_ci95": [
+            0.04877240576903367,
+            0.057892943325361844
+          ],
+          "cer": 0.02157235093049753,
+          "cer_ci95": [
+            0.019286416158082874,
+            0.02378818387409221
+          ],
+          "substitutions": 509,
+          "deletions": 251,
+          "insertions": 120
+        }
+      },
+      "clip_length": {
+        "0-5 s": {
+          "clips": 353,
+          "ref_words": 2620,
+          "wer": 0.05534351145038168,
+          "wer_ci95": [
+            0.04590995901494229,
+            0.0648331035787019
+          ],
+          "cer": 0.018520812685827552,
+          "cer_ci95": [
+            0.014384355881833061,
+            0.022785594596136275
+          ],
+          "substitutions": 89,
+          "deletions": 38,
+          "insertions": 18
+        },
+        "5-10 s": {
+          "clips": 565,
+          "ref_words": 10174,
+          "wer": 0.050324356202083746,
+          "wer_ci95": [
+            0.04560005084369491,
+            0.05595776106194398
+          ],
+          "cer": 0.017362202250015713,
+          "cer_ci95": [
+            0.015193393963862841,
+            0.019798234302451895
+          ],
+          "substitutions": 306,
+          "deletions": 144,
+          "insertions": 62
+        },
+        "10-20 s": {
+          "clips": 807,
+          "ref_words": 25601,
+          "wer": 0.05101363227998906,
+          "wer_ci95": [
+            0.047476496298305575,
+            0.05460513192938579
+          ],
+          "cer": 0.019683375692807054,
+          "cer_ci95": [
+            0.01788281972705411,
+            0.02148746974228586
+          ],
+          "substitutions": 765,
+          "deletions": 353,
+          "insertions": 188
+        },
+        ">= 20 s": {
+          "clips": 296,
+          "ref_words": 15059,
+          "wer": 0.0539212431104323,
+          "wer_ci95": [
+            0.048798607982037646,
+            0.05910661554611179
+          ],
+          "cer": 0.021985823006817066,
+          "cer_ci95": [
+            0.01943958438335415,
+            0.024598456215978937
+          ],
+          "substitutions": 454,
+          "deletions": 193,
+          "insertions": 165
+        }
+      }
+    },
+    "subgroup_definition": {
+      "speaking_rate_borders_wps": [
+        2.095,
+        2.451
+      ]
+    },
+    "rtf": 0.002346491596285911,
+    "rtfx": 426.16815742397137,
+    "silence": {
+      "clips": 60,
+      "clips_with_output": 0,
+      "words_emitted": 0,
+      "seconds": 358.31
+    },
+    "meta": {
+      "kind": "baseline",
+      "system": "nemo_hr_fastconformer_hybrid",
+      "family": "Neural: hybrid transducer/CTC (FastConformer, published Croatian model)",
+      "checkpoint": "nvidia/stt_hr_fastconformer_hybrid_large_pc",
+      "revision": "27c9225af6529e4d7e9e29aa6cbb8fe65321982f",
+      "language": "none (Croatian-only model)",
+      "backend": "nemo",
+      "decoding": "NeMo model default (greedy_batch)",
+      "transcribe_kwargs": {},
+      "decoder_type": "rnnt",
+      "gpu": "Tesla T4",
+      "precision": "fp32",
+      "batch_size": 16,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 55.9,
+      "timing_split": "test",
+      "timing": {
+        "dev": {
+          "clips": 2254,
+          "audio_seconds": 22749.66,
+          "compute_seconds": 56.86
+        },
+        "test": {
+          "clips": 2021,
+          "audio_seconds": 23822.8,
+          "compute_seconds": 55.9
+        },
+        "silence": {
+          "clips": 60,
+          "audio_seconds": 358.31,
+          "compute_seconds": 0.88
+        }
+      },
+      "seed": 20261119,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.11.0+cu130",
+        "transformers": "4.57.6",
+        "nemo_toolkit": "2.7.3",
+        "huggingface_hub": "0.36.2"
+      },
+      "limit": null
+    }
+  },
+  "parakeet_tdt_v3": {
+    "clips": 2021,
+    "ref_words": 53454,
+    "wer": 0.06564522767239121,
+    "wer_ci95": [
+      0.06297408172088038,
+      0.06819725725015884
+    ],
+    "cer": 0.02191747673094062,
+    "cer_ci95": [
+      0.02069948381620163,
+      0.023169890769895753
+    ],
+    "substitutions": 2270,
+    "deletions": 718,
+    "insertions": 521,
+    "categories": {
+      "all": {
+        "recall": 0.9441014704231676,
+        "ref_words": 53454
+      },
+      "name": {
+        "recall": 0.7329504666188084,
+        "ref_words": 1393
+      },
+      "negation": {
+        "recall": 0.971830985915493,
+        "ref_words": 994
+      },
+      "most_missed_names": [
+        [
+          "rh",
+          95
+        ],
+        [
+          "a",
+          47
+        ],
+        [
+          "hdz",
+          21
+        ],
+        [
+          "eur",
+          14
+        ],
+        [
+          "u",
+          11
+        ],
+        [
+          "hs",
+          6
+        ],
+        [
+          "bih",
+          6
+        ],
+        [
+          "htv",
+          5
+        ],
+        [
+          "pdv",
+          4
+        ],
+        [
+          "bdp",
+          4
+        ]
+      ]
+    },
+    "subgroups": {
+      "speaking_rate": {
+        "slow": {
+          "clips": 674,
+          "ref_words": 15781,
+          "wer": 0.06229009568468411,
+          "wer_ci95": [
+            0.0577692408544311,
+            0.06659231865439777
+          ],
+          "cer": 0.020066023690853776,
+          "cer_ci95": [
+            0.01808810374475023,
+            0.0219952388153463
+          ],
+          "substitutions": 651,
+          "deletions": 159,
+          "insertions": 173
+        },
+        "medium": {
+          "clips": 670,
+          "ref_words": 19767,
+          "wer": 0.06647442707542875,
+          "wer_ci95": [
+            0.06200736147951871,
+            0.07094977801484185
+          ],
+          "cer": 0.02238029835105074,
+          "cer_ci95": [
+            0.020263843197814078,
+            0.024434670009668435
+          ],
+          "substitutions": 852,
+          "deletions": 273,
+          "insertions": 189
+        },
+        "fast": {
+          "clips": 677,
+          "ref_words": 17906,
+          "wer": 0.06768680889087457,
+          "wer_ci95": [
+            0.06305174284999102,
+            0.07215407559059751
+          ],
+          "cer": 0.023272241313478426,
+          "cer_ci95": [
+            0.02115618923700283,
+            0.02537939053424932
+          ],
+          "substitutions": 767,
+          "deletions": 286,
+          "insertions": 159
+        }
+      },
+      "gender": {
+        "F": {
+          "clips": 778,
+          "ref_words": 20365,
+          "wer": 0.054898109501595876,
+          "wer_ci95": [
+            0.051213273025450964,
+            0.05873824932583185
+          ],
+          "cer": 0.016543470608940514,
+          "cer_ci95": [
+            0.015051621535748943,
+            0.018223480910169603
+          ],
+          "substitutions": 750,
+          "deletions": 189,
+          "insertions": 179
+        },
+        "M": {
+          "clips": 649,
+          "ref_words": 16670,
+          "wer": 0.07318536292741452,
+          "wer_ci95": [
+            0.0684929442167343,
+            0.07860090503805102
+          ],
+          "cer": 0.025501672240802676,
+          "cer_ci95": [
+            0.0232018324322458,
+            0.027917606861023722
+          ],
+          "substitutions": 768,
+          "deletions": 278,
+          "insertions": 174
+        },
+        "unknown": {
+          "clips": 594,
+          "ref_words": 16419,
+          "wer": 0.07131981241244899,
+          "wer_ci95": [
+            0.06598949426834384,
+            0.07609690898757543
+          ],
+          "cer": 0.025085453854918345,
+          "cer_ci95": [
+            0.02277029682554561,
+            0.02735507160081571
+          ],
+          "substitutions": 752,
+          "deletions": 251,
+          "insertions": 168
+        }
+      },
+      "clip_length": {
+        "0-5 s": {
+          "clips": 353,
+          "ref_words": 2620,
+          "wer": 0.06603053435114503,
+          "wer_ci95": [
+            0.05586453368185468,
+            0.07690162481762856
+          ],
+          "cer": 0.020750743310208125,
+          "cer_ci95": [
+            0.016444780694334703,
+            0.0253692339152861
+          ],
+          "substitutions": 121,
+          "deletions": 36,
+          "insertions": 16
+        },
+        "5-10 s": {
+          "clips": 565,
+          "ref_words": 10174,
+          "wer": 0.06791822292117161,
+          "wer_ci95": [
+            0.061961729295171714,
+            0.074556813744631
+          ],
+          "cer": 0.02011187228961096,
+          "cer_ci95": [
+            0.017845662738951665,
+            0.022437668969805976
+          ],
+          "substitutions": 477,
+          "deletions": 131,
+          "insertions": 83
+        },
+        "10-20 s": {
+          "clips": 807,
+          "ref_words": 25601,
+          "wer": 0.06405999765634154,
+          "wer_ci95": [
+            0.06035015000024918,
+            0.06805173170073808
+          ],
+          "cer": 0.021661512080105336,
+          "cer_ci95": [
+            0.019908698167705827,
+            0.023538676467138225
+          ],
+          "substitutions": 1069,
+          "deletions": 342,
+          "insertions": 229
+        },
+        ">= 20 s": {
+          "clips": 296,
+          "ref_words": 15059,
+          "wer": 0.0667374991699316,
+          "wer_ci95": [
+            0.06137005308841655,
+            0.07212251015724466
+          ],
+          "cer": 0.02375011744563572,
+          "cer_ci95": [
+            0.02111314020626716,
+            0.026418977397936496
+          ],
+          "substitutions": 603,
+          "deletions": 209,
+          "insertions": 193
+        }
+      }
+    },
+    "subgroup_definition": {
+      "speaking_rate_borders_wps": [
+        2.095,
+        2.451
+      ]
+    },
+    "rtf": 0.0074563023658008295,
+    "rtfx": 134.1147328716996,
+    "silence": {
+      "clips": 60,
+      "clips_with_output": 2,
+      "words_emitted": 3,
+      "seconds": 358.31
+    },
+    "meta": {
+      "kind": "baseline",
+      "system": "parakeet_tdt_v3",
+      "family": "Pretrained: NVIDIA Parakeet TDT (transducer)",
+      "checkpoint": "nvidia/parakeet-tdt-0.6b-v3",
+      "revision": "541d1f99c6b0c3cd0b11a95167540bb8edefd82b",
+      "language": "automatic (the model has no language setting; Croatian is supported, model card)",
+      "backend": "nemo",
+      "decoding": "NeMo model default (greedy_batch)",
+      "transcribe_kwargs": {},
+      "gpu": "Tesla T4",
+      "precision": "fp32",
+      "batch_size": 16,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 177.63,
+      "timing_split": "test",
+      "timing": {
+        "dev": {
+          "clips": 2254,
+          "audio_seconds": 22749.66,
+          "compute_seconds": 169.45
+        },
+        "test": {
+          "clips": 2021,
+          "audio_seconds": 23822.8,
+          "compute_seconds": 177.63
+        },
+        "silence": {
+          "clips": 60,
+          "audio_seconds": 358.31,
+          "compute_seconds": 2.94
+        }
+      },
+      "seed": 20261119,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.11.0+cu130",
+        "transformers": "4.57.6",
+        "nemo_toolkit": "2.7.3",
+        "huggingface_hub": "0.36.2"
+      },
+      "limit": null
+    }
+  },
+  "w2v2_classla_hr": {
+    "clips": 2021,
+    "ref_words": 53454,
+    "wer": 0.08925431211883114,
+    "wer_ci95": [
+      0.08582676487288254,
+      0.09262376212700195
+    ],
+    "cer": 0.02596337151996978,
+    "cer_ci95": [
+      0.024690360991471223,
+      0.027273108730476458
+    ],
+    "substitutions": 3190,
+    "deletions": 1045,
+    "insertions": 536,
+    "categories": {
+      "all": {
+        "recall": 0.9207730010850451,
+        "ref_words": 53454
+      },
+      "name": {
+        "recall": 0.6905958363244795,
+        "ref_words": 1393
+      },
+      "negation": {
+        "recall": 0.9617706237424547,
+        "ref_words": 994
+      },
+      "most_missed_names": [
+        [
+          "a",
+          74
+        ],
+        [
+          "u",
+          18
+        ],
+        [
+          "eur",
+          15
+        ],
+        [
+          "hdz",
+          14
+        ],
+        [
+          "rh",
+          14
+        ],
+        [
+          "uskok",
+          11
+        ],
+        [
+          "eu",
+          11
+        ],
+        [
+          "hrvatske",
+          8
+        ],
+        [
+          "hrvatskoj",
+          8
+        ],
+        [
+          "om",
+          6
+        ]
+      ]
+    },
+    "subgroups": {
+      "speaking_rate": {
+        "slow": {
+          "clips": 674,
+          "ref_words": 15781,
+          "wer": 0.08282111399784552,
+          "wer_ci95": [
+            0.07726231187319173,
+            0.08849607098791737
+          ],
+          "cer": 0.023256244047233754,
+          "cer_ci95": [
+            0.021003557330033593,
+            0.0256592321851871
+          ],
+          "substitutions": 896,
+          "deletions": 234,
+          "insertions": 177
+        },
+        "medium": {
+          "clips": 670,
+          "ref_words": 19767,
+          "wer": 0.08635604795871908,
+          "wer_ci95": [
+            0.08124500345009648,
+            0.09169500247511718
+          ],
+          "cer": 0.02624663581006518,
+          "cer_ci95": [
+            0.02415583617129062,
+            0.028466071616242622
+          ],
+          "substitutions": 1115,
+          "deletions": 382,
+          "insertions": 210
+        },
+        "fast": {
+          "clips": 677,
+          "ref_words": 17906,
+          "wer": 0.09812353401094605,
+          "wer_ci95": [
+            0.0918423129647568,
+            0.10407410481422721
+          ],
+          "cer": 0.02841733486063383,
+          "cer_ci95": [
+            0.026222314890291226,
+            0.030607847174735907
+          ],
+          "substitutions": 1179,
+          "deletions": 429,
+          "insertions": 149
+        }
+      },
+      "gender": {
+        "F": {
+          "clips": 778,
+          "ref_words": 20365,
+          "wer": 0.07267370488583354,
+          "wer_ci95": [
+            0.06811661951652173,
+            0.07713525650088196
+          ],
+          "cer": 0.020407694779854,
+          "cer_ci95": [
+            0.018674687142650824,
+            0.022279730671549536
+          ],
+          "substitutions": 990,
+          "deletions": 302,
+          "insertions": 188
+        },
+        "M": {
+          "clips": 649,
+          "ref_words": 16670,
+          "wer": 0.10389922015596881,
+          "wer_ci95": [
+            0.09812695357605042,
+            0.11051586278828232
+          ],
+          "cer": 0.03015866842964922,
+          "cer_ci95": [
+            0.027860111543696806,
+            0.03265529307418896
+          ],
+          "substitutions": 1174,
+          "deletions": 372,
+          "insertions": 186
+        },
+        "unknown": {
+          "clips": 594,
+          "ref_words": 16419,
+          "wer": 0.09495097143553201,
+          "wer_ci95": [
+            0.08910011875950168,
+            0.10050351994366107
+          ],
+          "cer": 0.02875996961640714,
+          "cer_ci95": [
+            0.026570369716773432,
+            0.03111239139216742
+          ],
+          "substitutions": 1026,
+          "deletions": 371,
+          "insertions": 162
+        }
+      },
+      "clip_length": {
+        "0-5 s": {
+          "clips": 353,
+          "ref_words": 2620,
+          "wer": 0.09236641221374046,
+          "wer_ci95": [
+            0.08056101780445504,
+            0.10395747959217125
+          ],
+          "cer": 0.025582259663032705,
+          "cer_ci95": [
+            0.020905862036124993,
+            0.030247597997099116
+          ],
+          "substitutions": 171,
+          "deletions": 52,
+          "insertions": 19
+        },
+        "5-10 s": {
+          "clips": 565,
+          "ref_words": 10174,
+          "wer": 0.09524277570277177,
+          "wer_ci95": [
+            0.08780784082019327,
+            0.10302968452251587
+          ],
+          "cer": 0.025014141160203632,
+          "cer_ci95": [
+            0.022517333723728033,
+            0.027597214908406584
+          ],
+          "substitutions": 670,
+          "deletions": 209,
+          "insertions": 90
+        },
+        "10-20 s": {
+          "clips": 807,
+          "ref_words": 25601,
+          "wer": 0.08730127729385571,
+          "wer_ci95": [
+            0.08244166759059099,
+            0.0923402430984177
+          ],
+          "cer": 0.025470802584438252,
+          "cer_ci95": [
+            0.02374703466938766,
+            0.02730223068499619
+          ],
+          "substitutions": 1487,
+          "deletions": 495,
+          "insertions": 253
+        },
+        ">= 20 s": {
+          "clips": 296,
+          "ref_words": 15059,
+          "wer": 0.0879872501494123,
+          "wer_ci95": [
+            0.08113342095952392,
+            0.09420286502501714
+          ],
+          "cer": 0.027497938176617356,
+          "cer_ci95": [
+            0.02459009403105188,
+            0.030408190934918287
+          ],
+          "substitutions": 862,
+          "deletions": 289,
+          "insertions": 174
+        }
+      }
+    },
+    "subgroup_definition": {
+      "speaking_rate_borders_wps": [
+        2.095,
+        2.451
+      ]
+    },
+    "rtf": 0.01626341152173548,
+    "rtfx": 61.48771422671897,
+    "silence": {
+      "clips": 60,
+      "clips_with_output": 33,
+      "words_emitted": 33,
+      "seconds": 358.31
+    },
+    "meta": {
+      "kind": "baseline",
+      "system": "w2v2_classla_hr",
+      "family": "SSL: wav2vec 2.0 + CTC head (published Croatian fine-tune)",
+      "checkpoint": "classla/wav2vec2-xls-r-parlaspeech-hr",
+      "revision": "a6075e0c9e0c49a533dc61876b1eafc6bc78de92",
+      "language": "none (Croatian-only model)",
+      "backend": "hf_ctc",
+      "decoding": "greedy CTC (argmax), no language model",
+      "gpu": "Tesla T4",
+      "precision": "fp32",
+      "batch_size": 16,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 387.44,
+      "timing_split": "test",
+      "timing": {
+        "dev": {
+          "clips": 2254,
+          "audio_seconds": 22749.66,
+          "compute_seconds": 363.88
+        },
+        "test": {
+          "clips": 2021,
+          "audio_seconds": 23822.8,
+          "compute_seconds": 387.44
+        },
+        "silence": {
+          "clips": 60,
+          "audio_seconds": 358.31,
+          "compute_seconds": 5.79
+        }
+      },
+      "seed": 20261119,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.11.0+cu130",
+        "transformers": "4.57.6",
+        "nemo_toolkit": "2.7.3",
+        "huggingface_hub": "0.36.2"
+      },
+      "limit": null
+    }
+  },
+  "whisper_small": {
+    "clips": 2021,
+    "ref_words": 53454,
+    "wer": 0.3195270700041157,
+    "wer_ci95": [
+      0.3129481920861169,
+      0.3261627372929714
+    ],
+    "cer": 0.09224699140062917,
+    "cer_ci95": [
+      0.08954614828449114,
+      0.09514335895690954
+    ],
+    "substitutions": 12989,
+    "deletions": 2239,
+    "insertions": 1852,
+    "categories": {
+      "all": {
+        "recall": 0.7151195420361433,
+        "ref_words": 53454
+      },
+      "name": {
+        "recall": 0.48600143575017946,
+        "ref_words": 1393
+      },
+      "negation": {
+        "recall": 0.8319919517102615,
+        "ref_words": 994
+      },
+      "most_missed_names": [
+        [
+          "rh",
+          94
+        ],
+        [
+          "a",
+          57
+        ],
+        [
+          "eu",
+          41
+        ],
+        [
+          "ministarstva",
+          18
+        ],
+        [
+          "u",
+          15
+        ],
+        [
+          "eur",
+          15
+        ],
+        [
+          "domovinskog",
+          14
+        ],
+        [
+          "uskok",
+          13
+        ],
+        [
+          "hrvatskoj",
+          11
+        ],
+        [
+          "ministarstvo",
+          9
+        ]
+      ]
+    },
+    "subgroups": {
+      "speaking_rate": {
+        "slow": {
+          "clips": 674,
+          "ref_words": 15781,
+          "wer": 0.3169000697040745,
+          "wer_ci95": [
+            0.30499075299486955,
+            0.32860045354433365
+          ],
+          "cer": 0.08777267137031523,
+          "cer_ci95": [
+            0.08297726153614524,
+            0.09300714373574397
+          ],
+          "substitutions": 3818,
+          "deletions": 548,
+          "insertions": 635
+        },
+        "medium": {
+          "clips": 670,
+          "ref_words": 19767,
+          "wer": 0.3154246977285375,
+          "wer_ci95": [
+            0.3048198660448667,
+            0.3263991491493696
+          ],
+          "cer": 0.08994990433394993,
+          "cer_ci95": [
+            0.08579790236904777,
+            0.09443807196605568
+          ],
+          "substitutions": 4770,
+          "deletions": 797,
+          "insertions": 668
+        },
+        "fast": {
+          "clips": 677,
+          "ref_words": 17906,
+          "wer": 0.3263710488104546,
+          "wer_ci95": [
+            0.31542209221314116,
+            0.3380982934753519
+          ],
+          "cer": 0.09962772050400917,
+          "cer_ci95": [
+            0.09479803214200373,
+            0.10512367203256984
+          ],
+          "substitutions": 4401,
+          "deletions": 894,
+          "insertions": 549
+        }
+      },
+      "gender": {
+        "F": {
+          "clips": 778,
+          "ref_words": 20365,
+          "wer": 0.2803339062116376,
+          "wer_ci95": [
+            0.2701926118418738,
+            0.2900340385719687
+          ],
+          "cer": 0.0723336853220697,
+          "cer_ci95": [
+            0.06861847392926024,
+            0.07622559510077856
+          ],
+          "substitutions": 4392,
+          "deletions": 683,
+          "insertions": 634
+        },
+        "M": {
+          "clips": 649,
+          "ref_words": 16670,
+          "wer": 0.33167366526694664,
+          "wer_ci95": [
+            0.32104105189687526,
+            0.3428593305346066
+          ],
+          "cer": 0.1027066967410749,
+          "cer_ci95": [
+            0.09759962898078262,
+            0.10772732295559842
+          ],
+          "substitutions": 4146,
+          "deletions": 812,
+          "insertions": 571
+        },
+        "unknown": {
+          "clips": 594,
+          "ref_words": 16419,
+          "wer": 0.35580729642487363,
+          "wer_ci95": [
+            0.34450624650707895,
+            0.3673650363185068
+          ],
+          "cer": 0.10674135966578048,
+          "cer_ci95": [
+            0.10164781756713637,
+            0.11169926798342628
+          ],
+          "substitutions": 4451,
+          "deletions": 744,
+          "insertions": 647
+        }
+      },
+      "clip_length": {
+        "0-5 s": {
+          "clips": 353,
+          "ref_words": 2620,
+          "wer": 0.43435114503816796,
+          "wer_ci95": [
+            0.4065958357468293,
+            0.4661063019016155
+          ],
+          "cer": 0.1440782953419227,
+          "cer_ci95": [
+            0.1327614617107433,
+            0.15714618902701602
+          ],
+          "substitutions": 856,
+          "deletions": 138,
+          "insertions": 144
+        },
+        "5-10 s": {
+          "clips": 565,
+          "ref_words": 10174,
+          "wer": 0.3265185767643012,
+          "wer_ci95": [
+            0.31342248562243963,
+            0.34085406340603996
+          ],
+          "cer": 0.09216893972723274,
+          "cer_ci95": [
+            0.08677568697729988,
+            0.097773252314702
+          ],
+          "substitutions": 2559,
+          "deletions": 433,
+          "insertions": 330
+        },
+        "10-20 s": {
+          "clips": 807,
+          "ref_words": 25601,
+          "wer": 0.3178391469083239,
+          "wer_ci95": [
+            0.3090544888622216,
+            0.3267727966773055
+          ],
+          "cer": 0.09237223259944269,
+          "cer_ci95": [
+            0.08833371879243446,
+            0.09637132774530086
+          ],
+          "substitutions": 6193,
+          "deletions": 1076,
+          "insertions": 868
+        },
+        ">= 20 s": {
+          "clips": 296,
+          "ref_words": 15059,
+          "wer": 0.2976957301281626,
+          "wer_ci95": [
+            0.2848031465122187,
+            0.31080583622223923
+          ],
+          "cer": 0.08334986271910136,
+          "cer_ci95": [
+            0.07802175575885567,
+            0.08868190643825001
+          ],
+          "substitutions": 3381,
+          "deletions": 592,
+          "insertions": 510
+        }
+      }
+    },
+    "subgroup_definition": {
+      "speaking_rate_borders_wps": [
+        2.095,
+        2.451
+      ]
+    },
+    "rtf": 0.029562016219755866,
+    "rtfx": 33.827192048278306,
+    "silence": {
+      "clips": 60,
+      "clips_with_output": 60,
+      "words_emitted": 4205,
+      "seconds": 358.31
+    },
+    "meta": {
+      "kind": "baseline",
+      "system": "whisper_small",
+      "family": "Pretrained: Whisper (multilingual, encoder-decoder)",
+      "checkpoint": "openai/whisper-small",
+      "revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
+      "language": "hr",
+      "backend": "hf_whisper",
+      "decoding": "greedy",
+      "task": "transcribe",
+      "max_new_tokens": 440,
+      "timestamps": false,
+      "gpu": "Tesla T4",
+      "precision": "fp32",
+      "batch_size": 16,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 704.25,
+      "timing_split": "test",
+      "timing": {
+        "dev": {
+          "clips": 2254,
+          "audio_seconds": 22749.66,
+          "compute_seconds": 760.3
+        },
+        "test": {
+          "clips": 2021,
+          "audio_seconds": 23822.8,
+          "compute_seconds": 704.25
+        },
+        "silence": {
+          "clips": 60,
+          "audio_seconds": 358.31,
+          "compute_seconds": 71.87
+        }
+      },
+      "seed": 20261119,
+      "versions": {
+        "python": "3.13.16",
+        "torch": "2.11.0+cu130",
+        "transformers": "4.57.6",
+        "nemo_toolkit": "2.7.3",
+        "huggingface_hub": "0.36.2"
+      },
+      "limit": null
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "kind": "baseline",
+  "system": "nemo_hr_conformer_transducer",
+  "family": "Neural: transducer (Conformer-Transducer, published Croatian model)",
+  "checkpoint": "nvidia/stt_hr_conformer_transducer_large",
+  "revision": "65d62545d4a6bf479c22c9336e9640c7da7c1c51",
+  "language": "none (Croatian-only model)",
+  "backend": "nemo",
+  "decoding": "NeMo model default (greedy_batch)",
+  "transcribe_kwargs": {},
+  "gpu": "Tesla T4",
+  "precision": "fp32",
+  "batch_size": 16,
+  "audio_seconds": 23822.8,
+  "compute_seconds": 121.34,
+  "timing_split": "test",
+  "timing": {
+    "dev": {
+      "clips": 2254,
+      "audio_seconds": 22749.66,
+      "compute_seconds": 111.86
+    },
+    "test": {
+      "clips": 2021,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 121.34
+    },
+    "silence": {
+      "clips": 60,
+      "audio_seconds": 358.31,
+      "compute_seconds": 1.8
+    }
+  },
+  "seed": 20261119,
+  "versions": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "transformers": "4.57.6",
+    "nemo_toolkit": "2.7.3",
+    "huggingface_hub": "0.36.2"
+  },
+  "limit": null
+}
