@@ -112,6 +112,8 @@ def main() -> None:
     ap.add_argument("--limit-train", type=int, default=None, help="first N train clips, for a short trial run")
     ap.add_argument("--limit-eval", type=int, default=None, help="first N clips of dev/test/silence, for a trial run")
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--prepare-only", action="store_true",
+                    help="only build the feature cache (run once before training several systems in parallel)")
     args = ap.parse_args()
     out_dir = Path(args.out_dir)
     trial = bool(args.epochs or args.limit_train or args.limit_eval)
@@ -134,6 +136,9 @@ def main() -> None:
     tag = f"{cfg['features']}" + (f"_trial{args.limit_train}_{args.limit_eval}" if trial else "")
     stores = {s: FeatureStore.cached(WORK / "feats" / tag / s, rows[s], WORK, cfg["features"], args.workers)
               for s in SPLITS}
+    if args.prepare_only:
+        print(f"features ready: {tag}", flush=True)
+        return
     refs_dev = [r["text"] for r in rows["dev"]]
 
     model = build(m["kind"], len(vocab), m).to(device)
@@ -167,7 +172,7 @@ def main() -> None:
             torch.nn.utils.clip_grad_norm_(model.parameters(), tc["grad_clip"])
             scaler.step(opt)
             scaler.update()
-            losses.append(float(loss))
+            losses.append(float(loss.detach()))
             step += 1
         hours = (time.time() - t_start) / 3600
         last = epoch == epochs or hours >= tc["max_hours"]
@@ -195,10 +200,12 @@ def main() -> None:
     keys = sorted(grid)
     combos = [dict(zip(keys, v)) for v in itertools.product(*(grid[k] for k in keys))] or [{}]
     search = []
+    dev_nbest: dict[int, tuple[dict, float]] = {}   # beam -> (n-best per clip, compute seconds), reused below
     if isinstance(model, AEDModel):
         beams = sorted({c.get("beam", 1) for c in combos})
         for beam in beams:
-            nb, _ = decode_store(model, stores["dev"], vocab, device, tc["max_frames"], {"beam": beam}, nbest_only=True)
+            nb, sec = decode_store(model, stores["dev"], vocab, device, tc["max_frames"], {"beam": beam}, nbest_only=True)
+            dev_nbest[beam] = (nb, sec)
             for c in (c for c in combos if c.get("beam", 1) == beam):
                 hyps = [vocab.decode(AEDModel.choose(nb[r["id"]], c.get("ctc_lambda", 0.0))) for r in rows["dev"]]
                 search.append({**c, "dev_wer": corpus_wer(refs_dev, hyps)})
@@ -217,7 +224,12 @@ def main() -> None:
     timing = {}
     pred_dir = out_dir / "predictions"
     for split in ("dev", "test", "silence"):
-        hyps, seconds = decode_store(model, stores[split], vocab, device, tc["max_frames"], opts)
+        if split == "dev" and isinstance(model, AEDModel) and opts["beam"] in dev_nbest:
+            # the beam search of the dev search above is deterministic: reuse it instead of decoding dev again
+            nb, seconds = dev_nbest[opts["beam"]]
+            hyps = {i: vocab.decode(AEDModel.choose(nb[i], opts.get("ctc_lambda", 0.0))) for i in nb}
+        else:
+            hyps, seconds = decode_store(model, stores[split], vocab, device, tc["max_frames"], opts)
         write_jsonl(pred_dir / f"{args.system}.{split}.jsonl", [{"id": r["id"], "hyp": hyps[r["id"]]} for r in rows[split]])
         timing[split] = {"clips": len(rows[split]), "audio_seconds": round(sum(r["audio_length"] for r in rows[split]), 2),
                          "compute_seconds": round(seconds, 2)}

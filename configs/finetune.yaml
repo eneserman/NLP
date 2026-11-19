@@ -18,8 +18,8 @@ models:
       warmup_steps: 500
       weight_decay: 0.0
       grad_clip: 1.0
-      eval_every_steps: 1000      # dev WER (greedy) for checkpoint choice; also after the last step
-      max_hours: 9.0
+      eval_every_steps: 1500      # dev WER (greedy, full dev set) for checkpoint choice; also after the last step
+      max_hours: 6.0              # compute budget (Kaggle: 30 GPU h per week); the run stops here if it is not done
     eval_batch_size: 32
     dev_search: {num_beams: [1, 5]}
 
@@ -45,6 +45,6 @@ models:
       weight_decay: 0.0
       grad_clip: 1.0
       eval_every_steps: 2000
-      max_hours: 9.0
+      max_hours: 6.0              # compute budget (Kaggle: 30 GPU h per week); the run stops here if it is not done
     eval_max_samples: 4800000
     dev_search: {}

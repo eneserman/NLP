@@ -16,7 +16,7 @@ train:
   grad_clip: 5.0
   spec_augment: true
   eval_every: 2           # epochs between dev evaluations (greedy decoding) for checkpoint choice
-  max_hours: 10.0         # stop training after this much wall time (Kaggle sessions end after 12 h)
+  max_hours: 6.0          # compute budget: stop training after this much wall time (Kaggle: 30 GPU h per week)
 
 encoder: &enc
   n_mels: 80

@@ -6,12 +6,13 @@
 * xlsr: `facebook/wav2vec2-xls-r-300m` + a new CTC head over our characters (targets = the
   scoring-normalized text, word boundary "|"); the convolutional feature encoder stays frozen.
 
-Shared here: audio held in memory (decoded once with hrasr.audio.decode, via hrasr.inference),
+Shared here: audio decoded once with hrasr.audio.decode (via hrasr.inference) and read from disk,
 length-bucketed batches, the learning-rate schedule and the dev WER.
 """
 from __future__ import annotations
 
 import json
+import wave
 from pathlib import Path
 
 import numpy as np
@@ -23,22 +24,28 @@ from hrasr.textnorm import normalize_for_scoring
 
 
 class WaveStore:
-    """int16 audio of a split, in memory (50 h of 16 kHz audio is about 5.8 GB)."""
+    """Audio of a split: every clip decoded once to a 16-bit WAV file (hrasr.inference.prepare_wavs),
+    read from disk when a batch needs it. Nothing is held in memory, so two training processes on the
+    two GPUs share the operating system's file cache instead of holding 2 x 7 GB of audio."""
 
     def __init__(self, rows: list[dict], audio_root: Path, cache: Path, sr: int = 16000):
         wavs = prepare_wavs(rows, audio_root, cache, sr)
         self.rows = rows
         self.ids = [r["id"] for r in rows]
-        self.waves = [(read_wav(wavs[i]) * 32768.0).astype(np.int16) for i in self.ids]
+        self.paths = [wavs[i] for i in self.ids]
+        self.lengths = []
+        for p in self.paths:
+            with wave.open(str(p), "rb") as w:
+                self.lengths.append(w.getnframes())
 
     def __len__(self) -> int:
         return len(self.ids)
 
     def samples(self, k: int) -> int:
-        return len(self.waves[k])
+        return self.lengths[k]
 
     def get(self, k: int) -> np.ndarray:
-        return self.waves[k].astype(np.float32) / 32768.0
+        return read_wav(self.paths[k])
 
 
 def linear_schedule(step: int, peak: float, warmup: int, total: int) -> float:

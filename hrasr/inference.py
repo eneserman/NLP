@@ -13,6 +13,7 @@ Backends:
 """
 from __future__ import annotations
 
+import os
 import time
 import wave
 from pathlib import Path
@@ -48,7 +49,10 @@ def prepare_wavs(rows: list[dict], audio_root: Path, cache: Path, sr: int = 1600
     for r in rows:
         dst = cache / f"{r['id']}.wav"
         if not dst.exists():
-            write_wav(dst, decode(audio_root / r["audio"], sr), sr)
+            # temporary name + atomic rename: safe when two processes prepare the same clips
+            tmp = dst.with_name(f"{dst.name}.tmp{os.getpid()}")
+            write_wav(tmp, decode(audio_root / r["audio"], sr), sr)
+            os.replace(tmp, dst)
         out[r["id"]] = dst
     return out
 

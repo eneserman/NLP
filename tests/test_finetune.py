@@ -21,12 +21,25 @@ TEXTS = ["Dobar dan.", "Hvala lijepa, Ivan."]
 
 
 def fake_store(n_samples=(16000, 12000), texts=TEXTS, seed=0):
+    """A WaveStore over WAV files that are already decoded (prepare_wavs finds them in its cache,
+    so no ffmpeg is needed)."""
+    import tempfile
+    from pathlib import Path
+    from hrasr.inference import write_wav
     rng = np.random.default_rng(seed)
-    s = WaveStore.__new__(WaveStore)
-    s.rows = [{"id": f"c{i}", "text": t, "audio_length": n / 16000} for i, (n, t) in enumerate(zip(n_samples, texts))]
-    s.ids = [r["id"] for r in s.rows]
-    s.waves = [(0.1 * rng.standard_normal(n) * 32767).astype(np.int16) for n in n_samples]
-    return s
+    cache = Path(tempfile.mkdtemp())
+    rows = [{"id": f"c{i}", "audio": f"audio/c{i}.opus", "text": t, "audio_length": n / 16000}
+            for i, (n, t) in enumerate(zip(n_samples, texts))]
+    for r, n in zip(rows, n_samples):
+        write_wav(cache / f"{r['id']}.wav", (0.1 * rng.standard_normal(n)).astype(np.float32), 16000)
+    return WaveStore(rows, cache / "no-audio-needed", cache)
+
+
+def test_wave_store_reads_lengths_and_samples():
+    s = fake_store((8000, 6000))
+    assert len(s) == 2 and [s.samples(0), s.samples(1)] == [8000, 6000]
+    x = s.get(1)
+    assert x.dtype == np.float32 and len(x) == 6000 and float(np.abs(x).max()) <= 1.0
 
 
 def test_linear_schedule():
@@ -165,7 +178,8 @@ def test_finetune_script_end_to_end(whisper_proc, tmp_path):
     for split in ("train", "dev", "test"):
         write_jsonl(data / "clean" / f"{split}.jsonl", clips(split, 2, "Dobar dan."))
     write_jsonl(data / "clean" / "silence_probe.jsonl", clips("si", 1, ""))
-    cfg = (ROOT / "configs" / "finetune.yaml").read_text(encoding="utf-8").replace("eval_every_steps: 1000", "eval_every_steps: 2")
+    import re
+    cfg = re.sub(r"eval_every_steps: \d+", "eval_every_steps: 2", (ROOT / "configs" / "finetune.yaml").read_text(encoding="utf-8"))
     (tmp_path / "cfg.yaml").write_text(cfg, encoding="utf-8")
     env = {**os.environ, "HRASR_DATA": str(data), "HRASR_WORK": str(work), "PYTHONPATH": str(ROOT)}
     out = subprocess.run([sys.executable, str(ROOT / "scripts" / "finetune.py"), "--system", "whisper_small_ft",

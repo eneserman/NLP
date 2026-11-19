@@ -102,7 +102,10 @@ the same config gives the same selection, cleaning and split.
 Models (Kaggle, `notebooks/01`-`04`): each notebook clones the repository and makes a virtual
 environment with only the pinned packages of its requirements file, so the preinstalled packages
 of the Kaggle image cannot change the result (NeMo needs other versions of protobuf and jiwer than
-the image and than our scoring). The notebooks write predictions; all systems are then scored
+the image and than our scoring). Each requirements file is the complete `pip freeze` of that
+environment on Kaggle. Notebooks 02 and 04 train up to two systems at the same time, one per GPU of a
+"T4 x2" session; every training run has a compute budget (`max_hours` in its config, set so that all
+runs fit Kaggle's weekly GPU quota). The notebooks write predictions; all systems are then scored
 together, with `requirements/data.txt`:
 
 ```bash

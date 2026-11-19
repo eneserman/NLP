@@ -173,6 +173,8 @@ def main() -> None:
     ap.add_argument("--max-steps", type=int, default=None, help="for a short trial run")
     ap.add_argument("--limit-train", type=int, default=None, help="first N train clips, for a trial run")
     ap.add_argument("--limit-eval", type=int, default=None, help="first N dev/test/silence clips, for a trial run")
+    ap.add_argument("--prepare-only", action="store_true",
+                    help="only decode the audio to work/wav16k (run once before fine-tuning two systems in parallel)")
     args = ap.parse_args()
     out_dir = Path(args.out_dir)
     trial = bool(args.max_steps or args.limit_train or args.limit_eval or args.base_dir)
@@ -193,6 +195,9 @@ def main() -> None:
         for s in ("dev", "test", "silence"):
             rows[s] = rows[s][: args.limit_eval]
     stores = {s: WaveStore(rows[s], WORK, WORK / "wav16k") for s in SPLITS}
+    if args.prepare_only:
+        print("audio ready: " + ", ".join(f"{s} {len(v)}" for s, v in stores.items()), flush=True)
+        return
 
     if args.base_dir:
         local, sha = args.base_dir, "local-test-model"

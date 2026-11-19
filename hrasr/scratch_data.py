@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import json
+import os
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -51,10 +52,16 @@ class FeatureStore:
         return cls(np.concatenate(feats, 0) if feats else np.zeros((0, 1), np.float16), offsets, [r["id"] for r in rows])
 
     def save(self, path: Path) -> None:
+        """Each file is written under a temporary name and then renamed (atomic), and the id list,
+        which `cached` checks, is written last: a reader never sees a half-written store."""
         path.parent.mkdir(parents=True, exist_ok=True)
-        np.save(path.with_suffix(".npy"), self.data)
-        np.save(path.with_suffix(".offsets.npy"), self.offsets)
-        path.with_suffix(".ids.json").write_text(json.dumps(self.ids), encoding="utf-8")
+        tmp = f".tmp{os.getpid()}"
+        for suffix, arr in ((".npy", self.data), (".offsets.npy", self.offsets)):
+            with open(path.with_suffix(suffix + tmp), "wb") as f:
+                np.save(f, arr)
+            os.replace(path.with_suffix(suffix + tmp), path.with_suffix(suffix))
+        path.with_suffix(".ids.json" + tmp).write_text(json.dumps(self.ids), encoding="utf-8")
+        os.replace(path.with_suffix(".ids.json" + tmp), path.with_suffix(".ids.json"))
 
     @classmethod
     def load(cls, path: Path) -> "FeatureStore":
