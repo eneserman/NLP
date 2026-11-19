@@ -1,0 +1,20 @@
+# Classical course baseline: MFCC + GMM-HMM (hrasr/gmm_hmm.py, scripts/train_gmm_hmm.py). Runs on CPU.
+
+seed: 20261119
+features: mfcc            # 13 MFCC + deltas + delta-deltas, per-utterance CMVN
+
+train:
+  # number of Viterbi re-estimation iterations at each mixture size (the first one starts from a flat start)
+  schedule:
+    - {gaussians: 1, iterations: 5}
+    - {gaussians: 2, iterations: 3}
+    - {gaussians: 4, iterations: 3}
+    - {gaussians: 8, iterations: 3}
+    - {gaussians: 16, iterations: 3}
+  var_floor: 1.0e-3
+  lm_add_k: 0.1           # add-k smoothing of the character bigram LM
+
+# decoding settings chosen on dev (grid), then used once on test
+dev_search:
+  lm_weight: [2.0, 5.0, 10.0, 15.0]
+  ins_penalty: [0.0, -10.0, -20.0]

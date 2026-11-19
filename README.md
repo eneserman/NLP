@@ -28,6 +28,8 @@ them with our own fine-tuned models.
 | `.gitignore` | Ignores Python caches and `work/` (see below). |
 | `configs/data.yaml` | Every setting of the data pipeline: seed, target hours, speaker caps, cleaning thresholds, audio format. |
 | `configs/baselines.yaml` | Every course baseline and every published Croatian checkpoint, with the reason when one is not run. |
+| `configs/train_scratch.yaml` | Settings of the neural baselines we train from scratch (model sizes, training, the decoding settings searched on dev). |
+| `configs/train_gmm_hmm.yaml` | Settings of the MFCC + GMM-HMM baseline (mixture schedule, the decoding settings searched on dev). |
 | `hrasr/` | Python package used by all scripts. |
 | `hrasr/config.py` | Paths and config loading. |
 | `hrasr/source.py` | Reads the source Parquet files (Hugging Face Hub or a local folder). |
@@ -41,20 +43,30 @@ them with our own fine-tuned models.
 | `hrasr/subgroups.py` | Subgroups of the reference clips (speaking rate, speaker gender, clip length) and WER/CER per group. |
 | `hrasr/manifest.py` | JSON Lines read/write. |
 | `hrasr/inference.py` | Inference with published checkpoints (NeMo, wav2vec 2.0 CTC, Whisper): same decoded audio for every system, pinned revisions, timing. |
+| `hrasr/features.py` | Log-mel and MFCC features, CMVN and SpecAugment in plain torch. |
+| `hrasr/vocab.py` | Character vocabulary of the models we train (targets: the scoring-normalized text). |
+| `hrasr/conformer.py` | Conformer encoder (convolution subsampling, self-attention, convolution module). |
+| `hrasr/transducer.py` | RNN-T loss and greedy transducer decoding in plain torch. |
+| `hrasr/scratch_models.py` | CTC, hybrid CTC/attention encoder-decoder and RNN-T models; their decoding. |
+| `hrasr/scratch_data.py` | Feature cache per split and length-bucketed batches. |
+| `hrasr/gmm_hmm.py` | MFCC + GMM-HMM: character HMMs, Viterbi training, decoding with a character bigram LM. |
 | `scripts/01_fetch_metadata.py` ... `scripts/08_pack_audio.py` | The data pipeline, one script per step (see "Pipeline"). |
 | `scripts/build_dataset.sh` | Runs steps 1-8. |
 | `scripts/unpack_audio.py` | Extracts the audio shards into `work/audio/`. |
 | `scripts/infer_pretrained.py` | Runs one published checkpoint on dev, test and the no-speech clips; writes predictions and `.meta.json`. |
+| `scripts/train_scratch.py` | Trains `ctc_scratch`, `aed_hybrid_scratch` or `rnnt_scratch`, chooses the checkpoint and decoding settings on dev, decodes test once. |
+| `scripts/train_gmm_hmm.py` | Trains `gmm_hmm`, chooses the decoding settings on dev, decodes test once. |
 | `scripts/score.py` | Scores every system's predictions and writes the result tables. |
 | `data/LICENSE.md` | License and citation of the data. |
 | `data/raw/` | Raw data: `manifest.jsonl.gz` (every downloaded clip exactly as in the source, with transcripts, word alignment and speaker metadata), `SOURCE.json`, `v1_speakers.json`, `selection_report.json`. |
 | `data/clean/` | Cleaned data: `train.jsonl`, `dev.jsonl`, `test.jsonl`, `silence_probe.jsonl`; logs and reports: `cleaning_log.csv`, `text_fixes.csv`, `cleaning_report.json`, `split_log.csv`, `split_stats.json`. |
 | `data/audio/` | Audio of every raw clip and every no-speech clip, as Opus files in tar shards (`shard_*.tar`, each < 90 MB), and `INDEX.csv`. The raw and the clean manifests point into these shards. |
-| `notebooks/` | Kaggle notebooks: `00_build_dataset.ipynb` runs the data pipeline (CPU); `01_baselines_pretrained.ipynb` runs every published checkpoint and scores it (GPU); the training notebooks follow the same pattern. |
-| `results/` | `predictions/` (raw per-clip output of every system and a `.meta.json` per system), `scores.*.json`, `RESULTS.*.md`. |
+| `notebooks/` | Kaggle notebooks: `00_build_dataset.ipynb` runs the data pipeline (CPU); `01_baselines_pretrained.ipynb` runs every published checkpoint and scores it (GPU); `02_train_scratch.ipynb` trains one neural baseline from scratch (GPU); `03_train_gmm_hmm.ipynb` trains the GMM-HMM (CPU). |
+| `results/` | `predictions/` (raw per-clip output of every system and a `.meta.json` per system), `train_logs/` (training curve and every choice made on dev, for each model we trained), `scores.*.json`, `RESULTS.*.md`. |
 | `tests/` | Tests of the data pipeline and the evaluation (see "Tests"); `conftest.py` puts the repository on the Python path. |
 | `requirements/data.txt` | Pinned package versions for the pipeline, scoring and tests. |
 | `requirements/baselines.txt` | Pinned package versions for inference with published checkpoints (Kaggle GPU image). |
+| `requirements/train.txt` | Pinned package versions for training our models on Kaggle (the data requirements plus torch). |
 | `contributions/` | One file per group member: `<NAME>_<STUDENT_ID>_<GITHUB_USERNAME>.md`. |
 
 `work/` is not in the repository. It only holds files that a script rebuilds: the metadata table
@@ -290,6 +302,13 @@ run on test. Reported in a separate table in `results/RESULTS.test.md`.
   NeMo output formats, greedy CTC decoding with a small random wav2vec 2.0 model, the baseline
   config, and that a trial run cannot write into `results/predictions/`. Tests that need torch,
   transformers or ffmpeg are skipped where these are missing; the notebooks run them on Kaggle.
+* `tests/test_scratch.py`: features, SpecAugment, vocabulary, batching; the RNN-T loss against a sum
+  over all alignments and its gradient; greedy CTC and transducer decoding; that the encoder output of
+  an utterance does not depend on the padding of its batch; that each of the three models learns to
+  transcribe a small training set; beam search with CTC rescoring; `scripts/train_scratch.py` end to end.
+* `tests/test_gmm_hmm.py`: Gaussian mixture likelihood, normalized bigram LM, Viterbi alignment with
+  optional pauses, flat start, mixture splitting; training from a flat start recovers the true
+  alignments and decodes the training utterances; `scripts/train_gmm_hmm.py` end to end.
 * `tests/test_subgroups.py`: speaking-rate borders and groups, gender and length groups, and that
   the WER of each group equals scoring that group's clips directly.
 * `tests/test_pipeline_e2e.py`: runs steps 1-8 and the unpack script on a synthetic corpus with the

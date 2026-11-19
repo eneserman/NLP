@@ -1,0 +1,50 @@
+# Course baselines that we train from scratch on the train split (scripts/train_scratch.py).
+# Every setting is here. The checkpoint (epoch) and the decoding settings in `dev_search` are chosen
+# on dev; test is decoded once, at the end, with the chosen settings.
+
+seed: 20261119
+
+features: logmel          # 80 log-mel bands, 10 ms hop, per-utterance CMVN (hrasr/features.py)
+
+train:
+  epochs: 40
+  max_frames: 24000       # padded frames per batch (100 frames = 1 s), so about 240 s of audio
+  max_items: 64
+  peak_lr: 1.5e-3
+  warmup_steps: 4000      # linear warmup, then inverse square-root decay
+  weight_decay: 1.0e-3
+  grad_clip: 5.0
+  spec_augment: true
+  eval_every: 2           # epochs between dev evaluations (greedy decoding) for checkpoint choice
+  max_hours: 10.0         # stop training after this much wall time (Kaggle sessions end after 12 h)
+
+encoder: &enc
+  n_mels: 80
+  d_model: 256
+  n_layers: 12
+  heads: 4
+  ff: 1024
+  kernel: 15
+  dropout: 0.1
+
+models:
+  ctc_scratch:
+    kind: ctc
+    family: "Neural: CTC encoder"
+    encoder: {<<: *enc, time_stride: 2}
+    dev_search: {}
+
+  aed_hybrid_scratch:
+    kind: aed
+    family: "Neural: attention encoder-decoder, hybrid CTC/attention"
+    encoder: {<<: *enc, time_stride: 2}
+    decoder: {dec_layers: 6, dec_ff: 1024, dec_heads: 4, dropout: 0.1, ctc_weight: 0.3, label_smoothing: 0.1}
+    dev_search: {beam: [5], ctc_lambda: [0.0, 0.3, 0.5]}
+
+  rnnt_scratch:
+    kind: rnnt
+    family: "Neural: transducer (RNN-T)"
+    encoder: {<<: *enc, time_stride: 4}
+    transducer: {pred_embed: 256, pred_hidden: 320, pred_layers: 1, joint_hidden: 320, dropout: 0.1}
+    train: {max_frames: 12000}   # the joint network holds T x U x hidden per utterance
+    dev_search: {}

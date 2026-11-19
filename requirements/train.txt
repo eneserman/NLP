@@ -1,0 +1,3 @@
+# Training our own models (notebooks 02 and 03 on Kaggle).
+# PROVISIONAL: torch is pinned to the version of the Kaggle image after the trial run.
+-r data.txt
