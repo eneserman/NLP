@@ -1,0 +1,3 @@
+# Inference with published checkpoints (notebooks/01_baselines_pretrained.ipynb, Kaggle GPU image).
+# PROVISIONAL: the remaining pins are taken from the versions installed in the Kaggle trial run.
+nemo_toolkit[asr]==2.7.3
