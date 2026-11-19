@@ -109,12 +109,32 @@ def test_hf_ctc_backend_with_tiny_random_model(tmp_path):
     out = be.transcribe(paths)
     assert len(out) == 2 and all(isinstance(t, str) for t in out)
     assert set("".join(out)) <= set("abč ")         # only characters of the vocabulary
-    # greedy decoding: same as argmax + CTC collapse of the model's own logits for a single clip
+    # the padded frames of the shorter clip are not decoded: batched == alone
+    assert out[1] == be.transcribe(paths[1:])[0]
+    # greedy decoding: argmax, merge repeats, drop blank (<pad>) and <unk>, "|" -> space
     single = be.transcribe(paths[:1])[0]
     feats = be.proc([read_wav(paths[0])], sampling_rate=16000, return_tensors="pt")
     with torch.inference_mode():
         ids = be.model(feats.input_values).logits.argmax(-1)[0].tolist()
-    assert single == be.proc.decode(ids)
+    inv = {i: c for c, i in vocab.items()}
+    merged = [t for i, t in enumerate(ids) if i == 0 or t != ids[i - 1]]
+    expected = " ".join("".join(inv[t] for t in merged if t not in (0, 2)).replace("|", " ").split())
+    assert single == expected
+
+
+def test_ctc_ids_to_text_keeps_repeats_separated_by_blank():
+    transformers = pytest.importorskip("transformers")
+    import json as _json
+    import tempfile
+    from pathlib import Path
+    from hrasr.inference import ctc_ids_to_text
+    vocab = {"<pad>": 0, "|": 1, "<unk>": 2, "a": 3, "b": 4}
+    d = Path(tempfile.mkdtemp())
+    (d / "v.json").write_text(_json.dumps(vocab), encoding="utf-8")
+    tok = transformers.Wav2Vec2CTCTokenizer(str(d / "v.json"), word_delimiter_token="|")
+    # a a <pad> a | | b <unk> b  ->  "aa bb"
+    assert ctc_ids_to_text([3, 3, 0, 3, 1, 1, 4, 2, 4], tok) == "aa bb"
+    assert ctc_ids_to_text([0, 0, 1, 0], tok) == ""
 
 
 def test_every_runnable_baseline_has_backend_and_language():

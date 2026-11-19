@@ -1,0 +1,50 @@
+# Our contribution: fine-tuning on our train split (scripts/finetune.py, hrasr/finetune.py).
+# The checkpoint (evaluation step) and the decoding settings in `dev_search` are chosen on dev;
+# test is decoded once, at the end, with the chosen settings.
+
+seed: 20261119
+
+models:
+  whisper_small_ft:
+    kind: whisper
+    family: "Ours: Whisper-small (multilingual encoder-decoder), fully fine-tuned"
+    base: openai/whisper-small
+    revision: 973afd24965f72e36ca33b3055d56a652f456b4d   # the same revision as the whisper_small baseline
+    language: hr
+    train:
+      epochs: 3
+      batch_size: 16
+      peak_lr: 1.0e-5
+      warmup_steps: 500
+      weight_decay: 0.0
+      grad_clip: 1.0
+      eval_every_steps: 1000      # dev WER (greedy) for checkpoint choice; also after the last step
+      max_hours: 9.0
+    eval_batch_size: 32
+    dev_search: {num_beams: [1, 5]}
+
+  xlsr_300m_ft:
+    kind: xlsr
+    family: "Ours: wav2vec 2.0 XLS-R 300M + CTC head over characters, fine-tuned"
+    base: facebook/wav2vec2-xls-r-300m
+    revision: 1a640f32ac3e39899438a2931f9924c02f080a54
+    language: "Croatian only (CTC head trained on our data)"
+    model:
+      attention_dropout: 0.0
+      hidden_dropout: 0.0
+      feat_proj_dropout: 0.0
+      layerdrop: 0.05
+      mask_time_prob: 0.05
+      ctc_loss_reduction: mean
+    train:
+      epochs: 15
+      max_samples: 3200000        # padded samples per batch (200 s of audio)
+      max_items: 32
+      peak_lr: 1.0e-4
+      warmup_steps: 1000
+      weight_decay: 0.0
+      grad_clip: 1.0
+      eval_every_steps: 2000
+      max_hours: 9.0
+    eval_max_samples: 4800000
+    dev_search: {}

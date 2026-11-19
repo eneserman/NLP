@@ -30,6 +30,7 @@ them with our own fine-tuned models.
 | `configs/baselines.yaml` | Every course baseline and every published Croatian checkpoint, with the reason when one is not run. |
 | `configs/train_scratch.yaml` | Settings of the neural baselines we train from scratch (model sizes, training, the decoding settings searched on dev). |
 | `configs/train_gmm_hmm.yaml` | Settings of the MFCC + GMM-HMM baseline (mixture schedule, the decoding settings searched on dev). |
+| `configs/finetune.yaml` | Settings of our contribution: fine-tuning `openai/whisper-small` and `facebook/wav2vec2-xls-r-300m` (pinned revisions, training, the decoding settings searched on dev). |
 | `hrasr/` | Python package used by all scripts. |
 | `hrasr/config.py` | Paths and config loading. |
 | `hrasr/source.py` | Reads the source Parquet files (Hugging Face Hub or a local folder). |
@@ -50,23 +51,26 @@ them with our own fine-tuned models.
 | `hrasr/scratch_models.py` | CTC, hybrid CTC/attention encoder-decoder and RNN-T models; their decoding. |
 | `hrasr/scratch_data.py` | Feature cache per split and length-bucketed batches. |
 | `hrasr/gmm_hmm.py` | MFCC + GMM-HMM: character HMMs, Viterbi training, decoding with a character bigram LM. |
+| `hrasr/finetune.py` | Fine-tuning helpers: audio in memory, Whisper labels with the Croatian prompt, the XLS-R character vocabulary, learning-rate schedule. |
 | `scripts/01_fetch_metadata.py` ... `scripts/08_pack_audio.py` | The data pipeline, one script per step (see "Pipeline"). |
 | `scripts/build_dataset.sh` | Runs steps 1-8. |
 | `scripts/unpack_audio.py` | Extracts the audio shards into `work/audio/`. |
 | `scripts/infer_pretrained.py` | Runs one published checkpoint on dev, test and the no-speech clips; writes predictions and `.meta.json`. |
 | `scripts/train_scratch.py` | Trains `ctc_scratch`, `aed_hybrid_scratch` or `rnnt_scratch`, chooses the checkpoint and decoding settings on dev, decodes test once. |
 | `scripts/train_gmm_hmm.py` | Trains `gmm_hmm`, chooses the decoding settings on dev, decodes test once. |
+| `scripts/finetune.py` | Fine-tunes `whisper_small_ft` or `xlsr_300m_ft`, chooses the checkpoint and decoding settings on dev, decodes test once. |
 | `scripts/score.py` | Scores every system's predictions and writes the result tables. |
 | `data/LICENSE.md` | License and citation of the data. |
 | `data/raw/` | Raw data: `manifest.jsonl.gz` (every downloaded clip exactly as in the source, with transcripts, word alignment and speaker metadata), `SOURCE.json`, `v1_speakers.json`, `selection_report.json`. |
 | `data/clean/` | Cleaned data: `train.jsonl`, `dev.jsonl`, `test.jsonl`, `silence_probe.jsonl`; logs and reports: `cleaning_log.csv`, `text_fixes.csv`, `cleaning_report.json`, `split_log.csv`, `split_stats.json`. |
 | `data/audio/` | Audio of every raw clip and every no-speech clip, as Opus files in tar shards (`shard_*.tar`, each < 90 MB), and `INDEX.csv`. The raw and the clean manifests point into these shards. |
-| `notebooks/` | Kaggle notebooks: `00_build_dataset.ipynb` runs the data pipeline (CPU); `01_baselines_pretrained.ipynb` runs every published checkpoint and scores it (GPU); `02_train_scratch.ipynb` trains one neural baseline from scratch (GPU); `03_train_gmm_hmm.ipynb` trains the GMM-HMM (CPU). |
+| `notebooks/` | Kaggle notebooks: `00_build_dataset.ipynb` runs the data pipeline (CPU); `01_baselines_pretrained.ipynb` runs every published checkpoint and scores it (GPU); `02_train_scratch.ipynb` trains one neural baseline from scratch (GPU); `03_train_gmm_hmm.ipynb` trains the GMM-HMM (CPU); `04_finetune.ipynb` runs our fine-tuning (GPU). |
 | `results/` | `predictions/` (raw per-clip output of every system and a `.meta.json` per system), `train_logs/` (training curve and every choice made on dev, for each model we trained), `scores.*.json`, `RESULTS.*.md`. |
 | `tests/` | Tests of the data pipeline and the evaluation (see "Tests"); `conftest.py` puts the repository on the Python path. |
 | `requirements/data.txt` | Pinned package versions for the pipeline, scoring and tests. |
 | `requirements/baselines.txt` | Pinned package versions for inference with published checkpoints (Kaggle GPU image). |
 | `requirements/train.txt` | Pinned package versions for training our models on Kaggle (the data requirements plus torch). |
+| `requirements/finetune.txt` | Pinned package versions for fine-tuning on Kaggle (the data requirements plus torch and transformers). |
 | `contributions/` | One file per group member: `<NAME>_<STUDENT_ID>_<GITHUB_USERNAME>.md`. |
 
 `work/` is not in the repository. It only holds files that a script rebuilds: the metadata table
@@ -133,6 +137,12 @@ scored against the same edited text.
   step 5 removes them with a logged reason. We download 25% more than the targets, for problems
   that only the audio shows. `data/clean/cleaning_report.json` compares the prediction with the
   real cleaning result.
+* Result: the cleaning removed exactly the clips that the metadata rules predicted
+  (`selection_prediction_check` in `data/clean/cleaning_report.json`: 0 and 0), so the 25% margin
+  was not used up, and the splits are larger than the targets: 62.502 h train, 6.319 h dev,
+  6.617 h test (`data/clean/split_stats.json`). We keep them as built; the config is unchanged.
+* Speaker gender is "-" (unknown) in the source for some speakers (`speakers_by_gender` in
+  `data/clean/split_stats.json`); the subgroup table reports them as "unknown".
 * Speaker caps: at most 0.75 h of clean audio per training speaker and 0.5 h per dev/test
   speaker, so the data has many voices instead of a few frequent speakers.
 * Dev/test speakers come from an eval pool: speakers who are **not in ParlaSpeech-HR v1.0** and
@@ -309,6 +319,10 @@ run on test. Reported in a separate table in `results/RESULTS.test.md`.
 * `tests/test_gmm_hmm.py`: Gaussian mixture likelihood, normalized bigram LM, Viterbi alignment with
   optional pauses, flat start, mixture splitting; training from a flat start recovers the true
   alignments and decodes the training utterances; `scripts/train_gmm_hmm.py` end to end.
+* `tests/test_finetune.py`: learning-rate schedule, the XLS-R vocabulary and labels, Whisper labels
+  with the Croatian prompt; small random Whisper and wav2vec 2.0 models trained with the real code
+  learn the training transcripts; batched CTC decoding equals decoding each clip alone;
+  `scripts/finetune.py` end to end.
 * `tests/test_subgroups.py`: speaking-rate borders and groups, gender and length groups, and that
   the WER of each group equals scoring that group's clips directly.
 * `tests/test_pipeline_e2e.py`: runs steps 1-8 and the unpack script on a synthetic corpus with the

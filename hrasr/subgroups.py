@@ -44,7 +44,8 @@ def assign_groups(rows: list[dict]) -> tuple[dict[str, dict[str, str]], dict]:
     for r in rows:
         wps = words_per_second(r)
         groups["speaking_rate"][r["id"]] = "slow" if wps < lo else ("medium" if wps < hi else "fast")
-        groups["gender"][r["id"]] = r.get("speaker_gender") or "unknown"
+        g = (r.get("speaker_gender") or "").strip()
+        groups["gender"][r["id"]] = g if g not in ("", "-") else "unknown"   # the source writes "-" when unknown
         groups["clip_length"][r["id"]] = length_label(r["audio_length"])
     return groups, {"speaking_rate_borders_wps": [round(lo, 3), round(hi, 3)]}
 

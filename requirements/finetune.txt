@@ -1,0 +1,3 @@
+# Fine-tuning (notebooks/04_finetune.ipynb on Kaggle).
+# PROVISIONAL: torch and transformers are pinned to the versions of the Kaggle trial run.
+-r data.txt

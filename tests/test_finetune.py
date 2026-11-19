@@ -1,0 +1,177 @@
+import json
+import os
+import shutil
+import subprocess
+import sys
+
+import numpy as np
+import pytest
+
+torch = pytest.importorskip("torch")
+transformers = pytest.importorskip("transformers")
+
+from hrasr.config import ROOT  # noqa: E402
+from hrasr.finetune import WaveStore, linear_schedule, whisper_labels, xlsr_labels, xlsr_vocab  # noqa: E402
+
+sys.path.insert(0, str(ROOT / "scripts"))
+import finetune  # noqa: E402
+
+WHISPER_REV = "973afd24965f72e36ca33b3055d56a652f456b4d"
+TEXTS = ["Dobar dan.", "Hvala lijepa, Ivan."]
+
+
+def fake_store(n_samples=(16000, 12000), texts=TEXTS, seed=0):
+    rng = np.random.default_rng(seed)
+    s = WaveStore.__new__(WaveStore)
+    s.rows = [{"id": f"c{i}", "text": t, "audio_length": n / 16000} for i, (n, t) in enumerate(zip(n_samples, texts))]
+    s.ids = [r["id"] for r in s.rows]
+    s.waves = [(0.1 * rng.standard_normal(n) * 32767).astype(np.int16) for n in n_samples]
+    return s
+
+
+def test_linear_schedule():
+    assert linear_schedule(0, 1.0, 10, 100) == pytest.approx(0.1)
+    assert linear_schedule(9, 1.0, 10, 100) == pytest.approx(1.0)
+    assert linear_schedule(55, 1.0, 10, 100) == pytest.approx(0.5)
+    assert linear_schedule(100, 1.0, 10, 100) == 0.0
+
+
+def test_xlsr_vocab_and_labels(tmp_path):
+    from hrasr.finetune import build_xlsr_processor
+    v = xlsr_vocab(["Čaša vode.", "Dobar dan!"])
+    assert list(v)[:3] == ["[PAD]", "[UNK]", "|"] and "č" in v and " " not in v and "." not in v
+    proc = build_xlsr_processor(v, tmp_path)
+    y = xlsr_labels(proc.tokenizer, ["Dobar dan!", "Čaša."])
+    assert proc.tokenizer.decode([i for i in y[0].tolist() if i >= 0]) == "dobar dan"
+    assert int((y[1] == -100).sum()) == len("dobar dan") - len("čaša")
+
+
+@pytest.fixture(scope="module")
+def whisper_proc(tmp_path_factory):
+    try:
+        from transformers import WhisperProcessor
+        proc = WhisperProcessor.from_pretrained("openai/whisper-small", revision=WHISPER_REV)
+    except Exception as e:  # no internet
+        pytest.skip(f"Whisper tokenizer not available: {e}")
+    d = tmp_path_factory.mktemp("whisper_proc")
+    proc.save_pretrained(d)
+    return proc, d
+
+
+def test_whisper_labels_have_croatian_prompt_and_eot(whisper_proc):
+    proc, _ = whisper_proc
+    y = whisper_labels(proc.tokenizer, TEXTS, "hr")
+    tok = proc.tokenizer
+    first = tok.convert_ids_to_tokens(y[0, :3].tolist())
+    assert first == ["<|hr|>", "<|transcribe|>", "<|notimestamps|>"]       # <|startoftranscript|> removed
+    ids0 = [i for i in y[0].tolist() if i >= 0]
+    assert ids0[-1] == tok.eos_token_id
+    assert tok.decode(ids0, skip_special_tokens=True) == "Dobar dan."
+    assert int((y[0] == -100).sum()) > 0 and int((y[1] == -100).sum()) == 0
+
+
+def _tiny_whisper(proc_dir, out):
+    from transformers import WhisperConfig, WhisperForConditionalGeneration, WhisperProcessor
+    proc = WhisperProcessor.from_pretrained(proc_dir)
+    tok = proc.tokenizer
+    cfg = WhisperConfig(vocab_size=len(tok), d_model=32, encoder_layers=1, decoder_layers=1, encoder_attention_heads=2,
+                        decoder_attention_heads=2, encoder_ffn_dim=64, decoder_ffn_dim=64, num_mel_bins=80,
+                        max_source_positions=1500, max_target_positions=448,
+                        decoder_start_token_id=tok.convert_tokens_to_ids("<|startoftranscript|>"),
+                        pad_token_id=tok.pad_token_id, eos_token_id=tok.eos_token_id, bos_token_id=tok.bos_token_id)
+    torch.manual_seed(0)
+    model = WhisperForConditionalGeneration(cfg)
+    from transformers import GenerationConfig
+    full = GenerationConfig.from_pretrained("openai/whisper-small", revision=WHISPER_REV)  # language and task ids
+    model.generation_config = full
+    model.save_pretrained(out)
+    proc.save_pretrained(out)
+
+
+def _train(sysobj, store, steps, lr):
+    opt = torch.optim.Adam(sysobj.model.parameters(), lr=lr)
+    first = None
+    for _ in range(steps):
+        sysobj.model.train()
+        loss = sysobj.loss(store, [0, 1])
+        opt.zero_grad()
+        loss.backward()
+        opt.step()
+        first = first if first is not None else float(loss.detach())
+    return first, float(loss.detach())
+
+
+def test_tiny_whisper_learns_the_transcripts(whisper_proc, tmp_path):
+    _, proc_dir = whisper_proc
+    _tiny_whisper(proc_dir, tmp_path / "tiny")
+    m = {"language": "hr", "train": {"batch_size": 2}, "eval_batch_size": 2}
+    sysobj = finetune.Whisper(str(tmp_path / "tiny"), m, "cpu")
+    store = fake_store()
+    first, last = _train(sysobj, store, 150, 3e-3)
+    assert last < 0.05 * first
+    assert sysobj.decode(store, [0, 1]) == TEXTS
+    assert sysobj.decode(store, [0, 1], num_beams=2) == TEXTS
+    sysobj.save(tmp_path / "best")
+    sysobj.load(tmp_path / "best")
+    assert sysobj.decode(store, [1]) == TEXTS[1:]
+
+
+def test_tiny_xlsr_learns_the_transcripts(tmp_path):
+    from transformers import Wav2Vec2Config, Wav2Vec2ForCTC
+    cfg = Wav2Vec2Config(vocab_size=32, hidden_size=32, num_hidden_layers=1, num_attention_heads=2, intermediate_size=64,
+                         conv_dim=(16, 16), conv_stride=(5, 4), conv_kernel=(10, 8), num_feat_extract_layers=2,
+                         feat_extract_norm="layer", do_stable_layer_norm=True, num_conv_pos_embeddings=16,
+                         num_conv_pos_embedding_groups=4)
+    torch.manual_seed(0)
+    Wav2Vec2ForCTC(cfg).save_pretrained(tmp_path / "base")
+    m = {"model": {"layerdrop": 0.0, "mask_time_prob": 0.0, "hidden_dropout": 0.0, "attention_dropout": 0.0,
+                   "feat_proj_dropout": 0.0, "ctc_loss_reduction": "mean"},
+         "train": {"max_samples": 10 ** 7, "max_items": 8}, "eval_max_samples": 10 ** 7}
+    sysobj = finetune.XLSR(str(tmp_path / "base"), m, "cpu", TEXTS, tmp_path / "work")
+    assert not any(p.requires_grad for p in sysobj.model.wav2vec2.feature_extractor.parameters())   # frozen
+    store = fake_store((8000, 6000))
+    first, last = _train(sysobj, store, 800, 3e-3)
+    assert last < 0.01 * first
+    # batched decoding (the shorter clip is padded) gives the same text as decoding each clip alone
+    assert sysobj.decode(store, [0, 1]) == ["dobar dan", "hvala lijepa ivan"]
+    assert sysobj.decode(store, [1]) == ["hvala lijepa ivan"]
+    sysobj.save(tmp_path / "best")
+    sysobj.load(tmp_path / "best")
+    assert sysobj.decode(store, [0]) == ["dobar dan"]
+
+
+@pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="needs ffmpeg")
+def test_finetune_script_end_to_end(whisper_proc, tmp_path):
+    from hrasr.audio import encode_opus
+    from hrasr.inference import write_wav
+    from hrasr.manifest import write_jsonl
+    _, proc_dir = whisper_proc
+    _tiny_whisper(proc_dir, tmp_path / "tiny")
+    data, work = tmp_path / "data", tmp_path / "work"
+    (work / "audio").mkdir(parents=True)
+    rng = np.random.default_rng(0)
+
+    def clips(prefix, n, text):
+        rows = []
+        for i in range(n):
+            sig = (0.1 * rng.standard_normal(16000 + 800 * i)).astype(np.float32)
+            write_wav(tmp_path / "x.wav", sig, 16000)
+            (work / f"audio/{prefix}{i}.opus").write_bytes(encode_opus((tmp_path / "x.wav").read_bytes()))
+            rows.append({"id": f"{prefix}{i}", "audio": f"audio/{prefix}{i}.opus", "text": text, "audio_length": len(sig) / 16000})
+        return rows
+    for split in ("train", "dev", "test"):
+        write_jsonl(data / "clean" / f"{split}.jsonl", clips(split, 2, "Dobar dan."))
+    write_jsonl(data / "clean" / "silence_probe.jsonl", clips("si", 1, ""))
+    cfg = (ROOT / "configs" / "finetune.yaml").read_text(encoding="utf-8").replace("eval_every_steps: 1000", "eval_every_steps: 2")
+    (tmp_path / "cfg.yaml").write_text(cfg, encoding="utf-8")
+    env = {**os.environ, "HRASR_DATA": str(data), "HRASR_WORK": str(work), "PYTHONPATH": str(ROOT)}
+    out = subprocess.run([sys.executable, str(ROOT / "scripts" / "finetune.py"), "--system", "whisper_small_ft",
+                          "--config", str(tmp_path / "cfg.yaml"), "--out-dir", str(tmp_path / "results"),
+                          "--base-dir", str(tmp_path / "tiny"), "--max-steps", "5"], env=env, capture_output=True, text=True)
+    assert out.returncode == 0, out.stderr[-3000:]
+    meta = json.loads((tmp_path / "results" / "predictions" / "whisper_small_ft.meta.json").read_text(encoding="utf-8"))
+    assert meta["kind"] == "ours" and meta["trial"] and meta["chosen_step"] in (2, 4, 5)
+    log = json.loads((tmp_path / "results" / "train_logs" / "whisper_small_ft.json").read_text(encoding="utf-8"))
+    assert [e["step"] for e in log["evals"]] == [2, 4, 5] and {s["num_beams"] for s in log["dev_search"]} == {1, 5}
+    for split, n in (("dev", 2), ("test", 2), ("silence", 1)):
+        assert len((tmp_path / "results" / "predictions" / f"whisper_small_ft.{split}.jsonl").read_text(encoding="utf-8").splitlines()) == n

@@ -88,6 +88,29 @@ class Backend:
         return {}
 
 
+def ctc_decode_valid(model, proc, input_values, attention_mask) -> list[str]:
+    """Greedy CTC decoding of a padded batch. Only the output frames of each clip's own audio are
+    decoded: frames computed from padding would otherwise add characters to the shorter clips."""
+    import torch
+    with torch.inference_mode():
+        logits = model(input_values, attention_mask=attention_mask).logits
+        n = model._get_feat_extract_output_lengths(attention_mask.sum(-1)).tolist()
+    ids = logits.argmax(dim=-1).cpu().numpy()
+    return [ctc_ids_to_text(row[:k].tolist(), proc.tokenizer) for row, k in zip(ids, n)]
+
+
+def ctc_ids_to_text(ids: list[int], tok) -> str:
+    """Best-path CTC: merge repeats, remove the blank (the pad token), drop other special tokens
+    (<unk>, <s>, </s>), word delimiter -> space. Done here, not with tokenizer.decode, because some
+    transformers versions drop the pad token before merging repeats when skip_special_tokens=True."""
+    blank = tok.pad_token_id
+    merged = [t for i, t in enumerate(ids) if i == 0 or t != ids[i - 1]]
+    special = set(tok.all_special_ids) - {tok.convert_tokens_to_ids(tok.word_delimiter_token)}
+    pieces = tok.convert_ids_to_tokens([t for t in merged if t != blank and t not in special])
+    text = "".join(pieces).replace(tok.word_delimiter_token, " ")
+    return " ".join(text.split())
+
+
 class HFCTC(Backend):
     def __init__(self, model_dir: str, device: str):
         from transformers import AutoModelForCTC, AutoProcessor
@@ -98,13 +121,10 @@ class HFCTC(Backend):
     def transcribe(self, paths):
         import torch
         waves = [read_wav(p) for p in paths]
-        feats = self.proc(waves, sampling_rate=16000, return_tensors="pt", padding=True)
-        mask = feats.get("attention_mask")
-        kwargs = {"attention_mask": mask.to(self.device)} if mask is not None else {}
+        feats = self.proc(waves, sampling_rate=16000, return_tensors="pt", padding=True, return_attention_mask=True)
         with torch.inference_mode():
-            logits = self.model(feats.input_values.to(self.device), **kwargs).logits
-        ids = logits.argmax(dim=-1).cpu().numpy()
-        return list(self.proc.batch_decode(ids))
+            return ctc_decode_valid(self.model, self.proc, feats.input_values.to(self.device),
+                                    feats.attention_mask.to(self.device))
 
     def settings(self):
         return {"decoding": "greedy CTC (argmax), no language model"}

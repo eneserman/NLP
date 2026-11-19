@@ -22,8 +22,10 @@ def test_rate_tertiles_and_borders():
 
 
 def test_gender_and_length_groups():
-    groups, _ = assign_groups(ROWS + [{"id": "x", "text": "a b", "audio_length": 25.0, "speaker_gender": ""}])
+    groups, _ = assign_groups(ROWS + [{"id": "x", "text": "a b", "audio_length": 25.0, "speaker_gender": ""},
+                                      {"id": "y", "text": "a b", "audio_length": 3.0, "speaker_gender": "-"}])
     assert groups["gender"]["c1"] == "F" and groups["gender"]["c2"] == "M" and groups["gender"]["x"] == "unknown"
+    assert groups["gender"]["y"] == "unknown"            # ParlaSpeech-HR writes "-" for an unknown gender
     assert groups["clip_length"]["c1"] == "5-10 s"      # 6 s
     assert groups["clip_length"]["c6"] == "0-5 s"       # 1 s
     assert groups["clip_length"]["x"] == ">= 20 s"
