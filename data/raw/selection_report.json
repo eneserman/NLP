@@ -1,0 +1,20 @@
+{
+  "rows_in_corpus": 867581,
+  "rows_without_speaker": 0,
+  "predicted_share_removed_by_metadata_rules": 0.221,
+  "speakers_in_corpus": 494,
+  "speakers_excluded_as_in_v1": 301,
+  "eval_pool_size": 97,
+  "eval_speakers": 32,
+  "test_speakers": 15,
+  "dev_speakers": 17,
+  "test_expected_clean_hours": 6.617,
+  "dev_expected_clean_hours": 6.319,
+  "train_speakers": 320,
+  "train_expected_clean_hours": 62.502,
+  "selected_clips": 34593,
+  "selected_hours_raw": 99.753,
+  "selected_clips_predicted_to_fail_cleaning": 7484,
+  "row_groups_to_download": 772,
+  "eval_sessions": 116
+}

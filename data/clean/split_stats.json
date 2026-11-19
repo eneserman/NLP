@@ -1,0 +1,45 @@
+{
+  "dev": {
+    "speakers": 17,
+    "sessions": 61,
+    "utterances": 2254,
+    "hours": 6.319,
+    "speakers_by_gender": {
+      "-": 3,
+      "F": 7,
+      "M": 7
+    },
+    "sentences_also_in_train": 38,
+    "sentences_also_in_train_pct": 1.69
+  },
+  "test": {
+    "speakers": 15,
+    "sessions": 55,
+    "utterances": 2021,
+    "hours": 6.617,
+    "speakers_by_gender": {
+      "-": 5,
+      "F": 5,
+      "M": 5
+    },
+    "sentences_also_in_train": 46,
+    "sentences_also_in_train_pct": 2.28
+  },
+  "train": {
+    "speakers": 319,
+    "sessions": 264,
+    "utterances": 22834,
+    "hours": 62.502,
+    "speakers_by_gender": {
+      "-": 64,
+      "F": 59,
+      "M": 196
+    }
+  },
+  "removed_for_session_overlap": {
+    "clips": 0,
+    "hours": 0.0
+  },
+  "seed": 20261119,
+  "rule": "speaker-disjoint and session-disjoint; dev/test speakers are not in ParlaSpeech-HR v1.0 and first speak on or after 2020-07-22"
+}

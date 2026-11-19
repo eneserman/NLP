@@ -1,0 +1,56 @@
+{
+  "raw_clips": 34593,
+  "raw_hours": 99.753,
+  "kept_clips": 27109,
+  "kept_hours": 75.439,
+  "removed_clips": 7484,
+  "removed_hours": 24.314,
+  "removed_by_first_reason": {
+    "digits": 5479,
+    "duration_out_of_range": 1360,
+    "annotation": 423,
+    "alignment_gap": 122,
+    "speaking_rate": 91,
+    "silence": 9
+  },
+  "clips_with_reason_any": {
+    "digits": 5619,
+    "duration_out_of_range": 1369,
+    "annotation": 423,
+    "speaking_rate": 241,
+    "alignment_gap": 193,
+    "silence": 9
+  },
+  "reason_definitions": {
+    "missing_speaker": "No speaker name, so the clip cannot be put in a speaker-disjoint split.",
+    "duplicate_id": "The same clip ID appears more than once.",
+    "duplicate_audio": "The audio bytes are identical to an earlier clip.",
+    "decode_error": "ffmpeg could not decode the audio.",
+    "duration_mismatch": "Decoded length differs from the metadata length (broken or cut audio).",
+    "duration_out_of_range": "Clip is shorter or longer than the allowed range.",
+    "empty_text": "Transcript is empty after cleaning.",
+    "annotation": "Transcript contains brackets or symbols that mark editorial notes.",
+    "digits": "Transcript contains digits; the spoken form of a number is ambiguous.",
+    "non_latin_script": "Transcript contains letters from another script.",
+    "speaking_rate": "Characters per second are outside the normal range (likely misalignment).",
+    "no_word_alignment": "The word-level alignment is missing.",
+    "alignment_gap": "Long untranscribed gap at the start, end, or between words (likely missing words).",
+    "silence": "Audio is almost silent."
+  },
+  "transcripts_fixed": 205,
+  "selection_prediction_check": {
+    "predicted_clean_but_removed": 0,
+    "predicted_removed_but_kept": 0
+  },
+  "rows_where_text_differs_from_text_normalised": 437,
+  "config": {
+    "min_duration_s": 1.0,
+    "max_duration_s": 30.0,
+    "max_duration_mismatch_s": 0.25,
+    "min_chars_per_s": 6.0,
+    "max_chars_per_s": 25.0,
+    "max_edge_silence_s": 2.5,
+    "max_inner_gap_s": 3.0,
+    "min_rms_dbfs": -50.0
+  }
+}
