@@ -88,7 +88,8 @@ def _tiny_whisper(proc_dir, out):
     proc.save_pretrained(out)
 
 
-def _train(sysobj, store, steps, lr):
+def _train(sysobj, store, steps, lr, target_ratio=None):
+    """Train on the two clips; stop early once loss < target_ratio * first loss (if given)."""
     opt = torch.optim.Adam(sysobj.model.parameters(), lr=lr)
     first = None
     for _ in range(steps):
@@ -98,6 +99,8 @@ def _train(sysobj, store, steps, lr):
         loss.backward()
         opt.step()
         first = first if first is not None else float(loss.detach())
+        if target_ratio is not None and float(loss.detach()) < target_ratio * first:
+            break
     return first, float(loss.detach())
 
 
@@ -130,8 +133,8 @@ def test_tiny_xlsr_learns_the_transcripts(tmp_path):
     sysobj = finetune.XLSR(str(tmp_path / "base"), m, "cpu", TEXTS, tmp_path / "work")
     assert not any(p.requires_grad for p in sysobj.model.wav2vec2.feature_extractor.parameters())   # frozen
     store = fake_store((8000, 6000))
-    first, last = _train(sysobj, store, 800, 3e-3)
-    assert last < 0.01 * first
+    first, last = _train(sysobj, store, 3000, 3e-3, target_ratio=0.0005)
+    assert last < 0.0005 * first
     # batched decoding (the shorter clip is padded) gives the same text as decoding each clip alone
     assert sysobj.decode(store, [0, 1]) == ["dobar dan", "hvala lijepa ivan"]
     assert sysobj.decode(store, [1]) == ["hvala lijepa ivan"]

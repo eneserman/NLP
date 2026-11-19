@@ -1,3 +1,12 @@
-# Fine-tuning (notebooks/04_finetune.ipynb on Kaggle).
-# PROVISIONAL: torch and transformers are pinned to the versions of the Kaggle trial run.
--r data.txt
+# Fine-tuning: notebooks/04_finetune.ipynb, in its own virtual environment on the Kaggle GPU image
+# (Python 3.13). torch is the version of the Kaggle image; transformers is the version that the
+# published-checkpoint inference uses (requirements/baselines.txt), so both Whisper runs share it.
+# PROVISIONAL top-level pins; replaced by the complete `pip freeze` of the Kaggle trial run.
+--extra-index-url https://download.pytorch.org/whl/cu130
+torch==2.11.0+cu130
+transformers==4.57.6
+huggingface_hub==0.36.2
+numpy==2.4.4
+PyYAML==6.0.3
+jiwer==4.0.0
+pytest==9.2.0

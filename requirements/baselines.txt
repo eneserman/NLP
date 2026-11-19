@@ -1,3 +1,11 @@
-# Inference with published checkpoints (notebooks/01_baselines_pretrained.ipynb, Kaggle GPU image).
-# PROVISIONAL: the remaining pins are taken from the versions installed in the Kaggle trial run.
+# Inference with published checkpoints: notebooks/01_baselines_pretrained.ipynb, in its own virtual
+# environment on the Kaggle GPU image (Python 3.13, CUDA 13.0). torch is the version of the Kaggle image.
+# PROVISIONAL top-level pins; replaced by the complete `pip freeze` of the Kaggle trial run.
+--extra-index-url https://download.pytorch.org/whl/cu130
+torch==2.11.0+cu130
+torchaudio==2.11.0+cu130
 nemo_toolkit[asr]==2.7.3
+transformers==4.57.6
+huggingface_hub==0.36.2
+PyYAML==6.0.3
+pytest==9.2.0

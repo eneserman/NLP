@@ -64,13 +64,13 @@ them with our own fine-tuned models.
 | `data/raw/` | Raw data: `manifest.jsonl.gz` (every downloaded clip exactly as in the source, with transcripts, word alignment and speaker metadata), `SOURCE.json`, `v1_speakers.json`, `selection_report.json`. |
 | `data/clean/` | Cleaned data: `train.jsonl`, `dev.jsonl`, `test.jsonl`, `silence_probe.jsonl`; logs and reports: `cleaning_log.csv`, `text_fixes.csv`, `cleaning_report.json`, `split_log.csv`, `split_stats.json`. |
 | `data/audio/` | Audio of every raw clip and every no-speech clip, as Opus files in tar shards (`shard_*.tar`, each < 90 MB), and `INDEX.csv`. The raw and the clean manifests point into these shards. |
-| `notebooks/` | Kaggle notebooks: `00_build_dataset.ipynb` runs the data pipeline (CPU); `01_baselines_pretrained.ipynb` runs every published checkpoint and scores it (GPU); `02_train_scratch.ipynb` trains one neural baseline from scratch (GPU); `03_train_gmm_hmm.ipynb` trains the GMM-HMM (CPU); `04_finetune.ipynb` runs our fine-tuning (GPU). |
+| `notebooks/` | Kaggle notebooks: `00_build_dataset.ipynb` runs the data pipeline (CPU); `01_baselines_pretrained.ipynb` runs every published checkpoint (GPU); `02_train_scratch.ipynb` trains one neural baseline from scratch (GPU); `03_train_gmm_hmm.ipynb` trains the GMM-HMM (CPU); `04_finetune.ipynb` runs our fine-tuning (GPU). |
 | `results/` | `predictions/` (raw per-clip output of every system and a `.meta.json` per system), `train_logs/` (training curve and every choice made on dev, for each model we trained), `scores.*.json`, `RESULTS.*.md`. |
 | `tests/` | Tests of the data pipeline and the evaluation (see "Tests"); `conftest.py` puts the repository on the Python path. |
 | `requirements/data.txt` | Pinned package versions for the pipeline, scoring and tests. |
-| `requirements/baselines.txt` | Pinned package versions for inference with published checkpoints (Kaggle GPU image). |
-| `requirements/train.txt` | Pinned package versions for training our models on Kaggle (the data requirements plus torch). |
-| `requirements/finetune.txt` | Pinned package versions for fine-tuning on Kaggle (the data requirements plus torch and transformers). |
+| `requirements/baselines.txt` | Pinned package versions for inference with published checkpoints (own virtual environment on the Kaggle GPU image). |
+| `requirements/train.txt` | Pinned package versions for training our models on Kaggle (own virtual environment: the data requirements plus torch). |
+| `requirements/finetune.txt` | Pinned package versions for fine-tuning on Kaggle (own virtual environment: torch, transformers and the scoring packages). |
 | `contributions/` | One file per group member: `<NAME>_<STUDENT_ID>_<GITHUB_USERNAME>.md`. |
 
 `work/` is not in the repository. It only holds files that a script rebuilds: the metadata table
@@ -98,6 +98,17 @@ python scripts/06_split.py          # -> data/clean/{train,dev,test}.jsonl
 `05_clean.py` unpacks the audio by itself if `work/audio/` is empty. On Kaggle,
 `notebooks/00_build_dataset.ipynb` runs steps 1-8. The seed is `20261119` (`configs/data.yaml`);
 the same config gives the same selection, cleaning and split.
+
+Models (Kaggle, `notebooks/01`-`04`): each notebook clones the repository and makes a virtual
+environment with only the pinned packages of its requirements file, so the preinstalled packages
+of the Kaggle image cannot change the result (NeMo needs other versions of protobuf and jiwer than
+the image and than our scoring). The notebooks write predictions; all systems are then scored
+together, with `requirements/data.txt`:
+
+```bash
+python scripts/score.py --split dev
+python scripts/score.py --split test
+```
 
 ## Dataset
 

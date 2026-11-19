@@ -1,3 +1,6 @@
-# Training our own models (notebooks 02 and 03 on Kaggle).
-# PROVISIONAL: torch is pinned to the version of the Kaggle image after the trial run.
+# Training our own models: notebooks 02 and 03, in their own virtual environment on the Kaggle image
+# (Python 3.13). torch is the version of the Kaggle image.
+# PROVISIONAL top-level pins; replaced by the complete `pip freeze` of the Kaggle trial run.
+--extra-index-url https://download.pytorch.org/whl/cu130
+torch==2.11.0+cu130
 -r data.txt
