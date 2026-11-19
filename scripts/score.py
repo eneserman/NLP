@@ -8,7 +8,8 @@ Input:
   results/predictions/<system>.meta.json        kind, family, checkpoint, revision, settings, hardware, timing
   configs/baselines.yaml                        the full list of course baselines
 Output:
-  results/scores.<split>.json                   all numbers
+  results/scores.<split>.json                   all numbers, including WER/CER per subgroup
+                                                (speaking rate, speaker gender, clip length; hrasr/subgroups.py)
   results/RESULTS.<split>.md                    tables (never edited by hand)
 """
 from __future__ import annotations
@@ -25,6 +26,7 @@ from hrasr.config import CLEAN, ROOT  # noqa: E402
 from hrasr.errors import category_recall  # noqa: E402
 from hrasr.manifest import read_jsonl  # noqa: E402
 from hrasr.metrics import score  # noqa: E402
+from hrasr.subgroups import assign_groups, subgroup_scores  # noqa: E402
 from hrasr.textnorm import normalize_for_scoring  # noqa: E402
 
 RESULTS = ROOT / "results"
@@ -57,7 +59,9 @@ def main() -> None:
     ap.add_argument("--split", default="test", choices=["dev", "test"])
     args = ap.parse_args()
 
-    refs = {r["id"]: r["text"] for r in read_jsonl(CLEAN / f"{args.split}.jsonl")}
+    ref_rows = list(read_jsonl(CLEAN / f"{args.split}.jsonl"))
+    refs = {r["id"]: r["text"] for r in ref_rows}
+    groups, group_info = assign_groups(ref_rows)
     probe_path = CLEAN / "silence_probe.jsonl"
     probe = list(read_jsonl(probe_path)) if probe_path.exists() else []
     listed = yaml.safe_load((ROOT / "configs" / "baselines.yaml").read_text(encoding="utf-8"))["baselines"]
@@ -73,6 +77,8 @@ def main() -> None:
         ids = sorted(refs)
         s = score([refs[i] for i in ids], [hyps[i] for i in ids])
         s["categories"] = category_recall([refs[i] for i in ids], [hyps[i] for i in ids])
+        s["subgroups"] = subgroup_scores(refs, hyps, groups)
+        s["subgroup_definition"] = group_info
         if meta.get("compute_seconds") and meta.get("audio_seconds"):
             s["rtf"] = meta["compute_seconds"] / meta["audio_seconds"]
             s["rtfx"] = meta["audio_seconds"] / meta["compute_seconds"]
@@ -138,6 +144,20 @@ def main() -> None:
         for n in with_sil:
             v = scores[n]["silence"]
             lines.append(f"| {n} | {v['clips_with_output']} / {v['clips']} | {v['words_emitted']} | {v['seconds']} |\n")
+
+    if scores:
+        lo, hi = group_info["speaking_rate_borders_wps"]
+        titles = {"speaking_rate": f"Speaking rate (words per second of the reference; slow < {lo}, "
+                                   f"medium {lo}-{hi}, fast >= {hi})",
+                  "gender": "Speaker gender", "clip_length": "Clip length"}
+        lines += ["\n## 6. WER % by subgroup of the reference clips (clips per group in brackets)\n"]
+        for dim, title in titles.items():
+            labels = list(next(iter(scores.values()))["subgroups"][dim])
+            counts = {g: sum(1 for v in groups[dim].values() if v == g) for g in labels}
+            lines += [f"\n### {title}\n\n", "| System | " + " | ".join(f"{g} ({counts[g]})" for g in labels) + " |\n",
+                      "|---|" + "---|" * len(labels) + "\n"]
+            for name, s in scores.items():
+                lines.append(f"| {name} | " + " | ".join(pct(s["subgroups"][dim][g]["wer"]) for g in labels) + " |\n")
 
     (RESULTS / f"RESULTS.{args.split}.md").write_text("".join(lines), encoding="utf-8")
     print("".join(lines))

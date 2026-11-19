@@ -38,6 +38,7 @@ them with our own fine-tuned models.
 | `hrasr/audio.py` | ffmpeg decoding and encoding. |
 | `hrasr/metrics.py` | Corpus WER and CER with bootstrap confidence intervals. |
 | `hrasr/errors.py` | Error taxonomy: recall of names and negation words. |
+| `hrasr/subgroups.py` | Subgroups of the reference clips (speaking rate, speaker gender, clip length) and WER/CER per group. |
 | `hrasr/manifest.py` | JSON Lines read/write. |
 | `scripts/01_fetch_metadata.py` ... `scripts/08_pack_audio.py` | The data pipeline, one script per step (see "Pipeline"). |
 | `scripts/build_dataset.sh` | Runs steps 1-8. |
@@ -212,6 +213,12 @@ so no system needs long-audio chunking (W9 slide 39).
 * Error taxonomy (W9 slide 13): recall of **names** (capitalized words that do not start a
   sentence: people, parties, places, laws) and of **negation** words (*ne, nije, nisu, nema, neće,
   ...*), next to recall of all words, and the most often missed names.
+* Subgroups (`hrasr/subgroups.py`): WER and CER per group of reference clips, with the same
+  normalization and corpus-level counts. The groups come from the references only, so every
+  system is scored on the same clips in each group. **Speaking rate**: words per second of the
+  normalized reference; the borders between slow, medium and fast are the 1/3 and 2/3 quantiles
+  of the scored split and are printed in the table. **Speaker gender**: from the source metadata.
+  **Clip length**: 0-5 s, 5-10 s, 10-20 s, >= 20 s.
 * No-speech clips (W9 slide 44): 60 clips of digital silence, quiet white noise and low-frequency
   noise with empty references. WER is not defined here (zero reference words), so we report how
   many clips get any output and how many words are emitted.
@@ -275,7 +282,9 @@ run on test. Reported in a separate table in `results/RESULTS.test.md`.
 * `tests/test_metrics.py`: the W9 slide 33-34 example (WER 0.3333, CER 0.2273), corpus vs clip
   averaging, empty hypothesis, empty reference, confidence interval.
 * `tests/test_errors_and_scoring.py`: name and negation tagging, category recall, and
-  `scripts/score.py` end to end (tables, RTFx, no-speech results, "not run" rows).
+  `scripts/score.py` end to end (tables, RTFx, no-speech results, subgroup table, "not run" rows).
+* `tests/test_subgroups.py`: speaking-rate borders and groups, gender and length groups, and that
+  the WER of each group equals scoring that group's clips directly.
 * `tests/test_pipeline_e2e.py`: runs steps 1-8 and the unpack script on a synthetic corpus with the
   same Parquet schema, checks that planted problems are removed for the right reason, and that
   step 5 runs from the committed data alone.

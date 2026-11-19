@@ -30,7 +30,8 @@ def test_score_script_end_to_end(tmp_path):
     data = tmp_path / "data"
     (data / "clean").mkdir(parents=True)
     write_jsonl(data / "clean" / "test.jsonl", [
-        {"id": "a", "text": "Hvala lijepa, Ivan Horvat."}, {"id": "b", "text": "Zakon nije prihvaćen."}])
+        {"id": "a", "text": "Hvala lijepa, Ivan Horvat.", "audio_length": 2.0, "speaker_gender": "M"},
+        {"id": "b", "text": "Zakon nije prihvaćen.", "audio_length": 12.0, "speaker_gender": "F"}])
     write_jsonl(data / "clean" / "silence_probe.jsonl", [
         {"id": "s1", "text": "", "audio_length": 3.0}, {"id": "s2", "text": "", "audio_length": 4.0}])
     root = tmp_path / "repo"
@@ -56,3 +57,8 @@ def test_score_script_end_to_end(tmp_path):
     assert s["silence"] == {"clips": 2, "clips_with_output": 1, "words_emitted": 1, "seconds": 7.0}
     assert "not run: Croatian is not one of the 30 supported languages." in md
     assert "No-speech clips" in md and "Important words" in md
+    # subgroups: clip "a" is correct, clip "b" has the one error (3 words)
+    assert s["subgroups"]["gender"]["F"]["wer"] == pytest.approx(1 / 3) and s["subgroups"]["gender"]["M"]["wer"] == 0.0
+    assert s["subgroups"]["clip_length"]["0-5 s"]["wer"] == 0.0
+    assert s["subgroups"]["clip_length"]["10-20 s"]["wer"] == pytest.approx(1 / 3)
+    assert "WER % by subgroup" in md and "| whisper_small | 0.00 | 33.33 |" in md
