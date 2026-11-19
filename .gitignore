@@ -1,0 +1,11 @@
+# Python caches
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+venv/
+.venv/
+
+# work/ holds rebuildable temporary files only (full metadata scan, unpacked audio).
+# The dataset itself (raw and clean) is committed in data/.
+work/

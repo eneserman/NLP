@@ -1,0 +1,105 @@
+# Every baseline family from the course list (Project 3 announcement, Week 9), and every published
+# checkpoint we found for Croatian. scripts/score.py reads this file, so RESULTS.md shows every row:
+# a score, or the reason it was not run.
+# trained_by_us: true  = a course baseline that we implemented and trained ourselves (still a baseline).
+# Leakage note: entries marked "trained on ParlaSpeech-HR v1.0" are fair on our test set only because
+# no dev/test speaker is in v1.0 (scripts/02_fetch_v1_speakers.py, hrasr/selection.py).
+
+baselines:
+  # --- Classical -----------------------------------------------------------------------------
+  - system: gmm_hmm
+    family: "Classical: MFCC + GMM-HMM"
+    trained_by_us: true
+    status: planned
+
+  # --- Neural model families: trained by us ------------------------------------------------------
+  - system: ctc_scratch
+    family: "Neural: CTC encoder"
+    trained_by_us: true
+    status: planned
+
+  - system: aed_hybrid_scratch
+    family: "Neural: attention encoder-decoder, hybrid CTC/attention"
+    trained_by_us: true
+    status: planned
+
+  - system: rnnt_scratch
+    family: "Neural: transducer (RNN-T)"
+    trained_by_us: true
+    status: planned
+
+  # --- Neural model families: published Croatian checkpoints --------------------------------------
+  - system: nemo_hr_conformer_ctc
+    family: "Neural: CTC encoder (Conformer-CTC, published Croatian model)"
+    checkpoint: nvidia/stt_hr_conformer_ctc_large
+    note: "trained on ParlaSpeech-HR v1.0"
+    trained_by_us: false
+    status: planned
+
+  - system: nemo_hr_conformer_transducer
+    family: "Neural: transducer (Conformer-Transducer, published Croatian model)"
+    checkpoint: nvidia/stt_hr_conformer_transducer_large
+    note: "trained on ParlaSpeech-HR v1.0"
+    trained_by_us: false
+    status: planned
+
+  - system: nemo_hr_fastconformer_hybrid
+    family: "Neural: hybrid transducer/CTC (FastConformer, published Croatian model)"
+    checkpoint: nvidia/stt_hr_fastconformer_hybrid_large_pc
+    note: "trained on ParlaSpeech-HR v1.0"
+    trained_by_us: false
+    status: planned
+
+  # --- Self-supervised encoders with an ASR head ---------------------------------------------------
+  - system: w2v2_classla_hr
+    family: "SSL: wav2vec 2.0 + CTC head (published Croatian fine-tune)"
+    checkpoint: classla/wav2vec2-xls-r-parlaspeech-hr
+    note: "trained on ParlaSpeech-HR v1.0"
+    trained_by_us: false
+    status: planned
+
+  - system: hubert_ctc_hr
+    family: "SSL: HuBERT + CTC head"
+    trained_by_us: false
+    status: not_available
+    reason: "No HuBERT checkpoint with a Croatian ASR head was found on the Hugging Face Hub (searched 2026-11-19). A bare HuBERT encoder cannot transcribe audio, so it is not a baseline result."
+
+  # --- Pretrained multilingual ASR -------------------------------------------------------------------
+  - system: whisper_small
+    family: "Pretrained: Whisper (multilingual, encoder-decoder)"
+    checkpoint: openai/whisper-small
+    trained_by_us: false
+    status: planned
+
+  - system: canary_1b_v2
+    family: "Pretrained: NVIDIA Canary (attention encoder-decoder)"
+    checkpoint: nvidia/canary-1b-v2
+    trained_by_us: false
+    status: planned
+
+  - system: parakeet_tdt_v3
+    family: "Pretrained: NVIDIA Parakeet TDT (transducer)"
+    checkpoint: nvidia/parakeet-tdt-0.6b-v3
+    trained_by_us: false
+    status: planned
+
+  - system: qwen3_asr_1_7b
+    family: "Pretrained: Qwen3-ASR"
+    checkpoint: Qwen/Qwen3-ASR-1.7B
+    trained_by_us: false
+    status: not_supported
+    reason: "Croatian is not one of the 30 supported languages."
+    model_card: https://huggingface.co/Qwen/Qwen3-ASR-1.7B
+
+  - system: qwen3_asr_0_6b
+    family: "Pretrained: Qwen3-ASR"
+    checkpoint: Qwen/Qwen3-ASR-0.6B
+    trained_by_us: false
+    status: not_supported
+    reason: "Croatian is not one of the 30 supported languages."
+    model_card: https://huggingface.co/Qwen/Qwen3-ASR-0.6B
+
+# Published but excluded on purpose:
+#   5roop/whisper-large-v3-ParlaSpeech-HR is fine-tuned on ParlaSpeech-HR 2.0, the same corpus our
+#   test set comes from. Its training data may contain our test speakers and sessions, so its score
+#   would be a data leak (Project 3 split announcement). We do not report it.

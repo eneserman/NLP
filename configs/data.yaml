@@ -1,0 +1,45 @@
+# Settings for building the dataset. Every script reads this file.
+# Change values here, never inside the scripts.
+
+seed: 20261119
+
+source:
+  repo_id: classla/ParlaSpeech-HR      # Hugging Face mirror of ParlaSpeech-HR 2.0 (CLARIN.SI hdl:11356/1914)
+  revision: main                      # 01_fetch_metadata.py writes the resolved commit SHA to data/raw/SOURCE.json
+  text_field: text                    # transcript column we use as the reference
+
+selection:
+  # Hours we download. This is more than the final target, because cleaning removes some clips.
+  oversample: 1.25
+  train_hours: 50.0
+  dev_hours: 5.0
+  test_hours: 5.0
+  # Speaker caps keep many different voices in the data.
+  max_hours_per_train_speaker: 0.75
+  max_hours_per_eval_speaker: 0.5
+  min_hours_per_eval_speaker: 0.25
+  # Caps and targets count audio that is expected to pass cleaning. Clips expected to fail are
+  # still downloaded (so cleaning can remove them with a logged reason), but a speaker's raw audio
+  # may not exceed this factor times the speaker's expected-clean audio.
+  max_raw_factor: 1.5
+  # Dev/test speakers must (1) not appear in ParlaSpeech-HR v1.0, the training data of several
+  # published Croatian baselines (exact list: data/raw/v1_speakers.json, made by step 2), and
+  # (2) first speak on or after this date (first sitting of the 10th Sabor). See README "Leakage".
+  new_speaker_first_seen_on_or_after: "2020-07-22"
+  v1_metadata_url: "https://www.clarin.si/repository/xmlui/bitstream/handle/11356/1494/ParlaSpeech-HR.v1.0.jsonl"
+
+cleaning:
+  min_duration_s: 1.0
+  max_duration_s: 30.0
+  max_duration_mismatch_s: 0.25       # decoded audio length vs. metadata length
+  min_chars_per_s: 6.0                # slower than this: probably extra untranscribed audio
+  max_chars_per_s: 25.0               # faster than this: probably missing audio
+  max_edge_silence_s: 2.5             # gap before the first aligned word or after the last one
+  max_inner_gap_s: 3.0                # gap between two aligned words
+  min_rms_dbfs: -50.0                 # quieter than this: silence or a broken recording
+
+audio:
+  sample_rate: 16000
+  codec: libopus
+  bitrate: 32k
+  shard_max_mb: 90                    # GitHub blocks files over 100 MiB
