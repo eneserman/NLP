@@ -12,7 +12,7 @@ them with our own fine-tuned models.
 * Source: **ParlaSpeech-HR 2.0** (Ljubešić, Koržinek, Rupnik; CLARIN.SI,
   http://hdl.handle.net/11356/1914, CC BY-SA 4.0). We read the Parquet copy of this release on the
   Hugging Face Hub, `classla/ParlaSpeech-HR`, because it lets us download single clips instead of
-  157 GB of archives. The exact commit is recorded in `data/raw/SOURCE.json`.
+  the full archives. The exact commit is recorded in `data/raw/SOURCE.json`.
 * The source has no train/dev/test split. We make our own (see "Split").
 
 > Status: the data pipeline, the scoring code and the tests are finished. Baseline and training
@@ -122,8 +122,8 @@ python scripts/score.py --split test
   use a model's output as a reference.
 * **Speaker and session identity.** Every clip has the speaker's name and gender, and its ID names
   the sitting it comes from, so the split can be disjoint by both.
-* **Size.** The source has about 3,061 hours, so our subset can be large and still have many
-  speakers.
+* **Size.** The source has 867,581 clips, 2,484.97 hours and 494 speakers (`data/raw/SOURCE.json`),
+  so our subset can be large and still have many speakers.
 
 What counts as the transcript (W9 slide 3): the references are **edited** parliamentary records,
 not verbatim transcripts. Hesitations, false starts and repetitions may be missing from them. Every system is
@@ -133,7 +133,7 @@ scored against the same edited text.
 
 | Step | Script | What it does |
 |---|---|---|
-| 1 | `01_fetch_metadata.py` | Reads the metadata of every clip (about 870,000 rows) without audio. Reduces each word alignment to five numbers. Records the source commit SHA. |
+| 1 | `01_fetch_metadata.py` | Reads the metadata of every clip (867,581 rows, `data/raw/SOURCE.json`) without audio. Reduces each word alignment to five numbers. Records the source commit SHA. |
 | 2 | `02_fetch_v1_speakers.py` | Lists every speaker of ParlaSpeech-HR v1.0 (see "Leakage"). |
 | 3 | `03_select_subset.py` | Chooses speakers, sessions and clips (see "Selection"). |
 | 4 | `04_fetch_audio.py` | Downloads only the chosen rows, copies them unchanged into `data/raw/manifest.jsonl.gz`, hashes the original audio bytes and stores the audio as 16 kHz mono Opus. |
