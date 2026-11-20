@@ -40,6 +40,9 @@ from hrasr.inference import ctc_decode_valid  # noqa: E402
 from hrasr.manifest import read_jsonl, write_jsonl  # noqa: E402
 from hrasr.scratch_data import frame_batches  # noqa: E402
 
+# Non-reentrant activation checkpointing (PyTorch's recommended mode). The default reentrant mode failed
+# in the Kaggle trial (Whisper, fp16 autocast on CUDA): "Trying to backward through the graph a second time".
+NON_REENTRANT = {"use_reentrant": False}
 SPLITS = {"train": "train.jsonl", "dev": "dev.jsonl", "test": "test.jsonl", "silence": "silence_probe.jsonl"}
 
 
@@ -65,7 +68,7 @@ class Whisper:
         self.model.generation_config.forced_decoder_ids = None
         if m.get("train", {}).get("gradient_checkpointing"):
             self.model.config.use_cache = False          # required with gradient checkpointing during training
-            self.model.gradient_checkpointing_enable()
+            self.model.gradient_checkpointing_enable(gradient_checkpointing_kwargs=NON_REENTRANT)
         self.m, self.device = m, device
 
     def batches(self, store: WaveStore, rng):
@@ -114,7 +117,7 @@ class XLSR:
             ignore_mismatched_sizes=True, **m["model"]).to(device)
         self.model.freeze_feature_encoder()
         if m.get("train", {}).get("gradient_checkpointing"):
-            self.model.gradient_checkpointing_enable()
+            self.model.gradient_checkpointing_enable(gradient_checkpointing_kwargs=NON_REENTRANT)
         self.m, self.device = m, device
 
     def _inputs(self, store, idx):

@@ -208,6 +208,11 @@ def test_gradient_checkpointing_trains_and_generates_with_cache(whisper_proc, tm
     sysobj = finetune.Whisper(str(tmp_path / "tiny"), m, "cpu")
     assert sysobj.model.is_gradient_checkpointing and sysobj.model.config.use_cache is False
     store = fake_store()
+    sysobj.model.train()
+    (sysobj.loss(store, [0, 1]) / 2).backward()          # two accumulated batches, as in scripts/finetune.py
+    (sysobj.loss(store, [1, 0]) / 2).backward()
+    assert [n for n, p in sysobj.model.named_parameters() if p.requires_grad and p.grad is None] == []
+    sysobj.model.zero_grad()
     first, last = _train(sysobj, store, 150, 3e-3)
     assert last < 0.05 * first
     calls = []
@@ -230,3 +235,5 @@ def test_xlsr_gradient_checkpointing_flag(tmp_path):
     loss = sysobj.loss(fake_store((8000, 6000)), [0, 1])
     loss.backward()
     assert torch.isfinite(loss) and any(p.grad is not None for p in sysobj.model.lm_head.parameters())
+    # every trainable parameter gets a gradient through the checkpointed layers
+    assert [n for n, p in sysobj.model.named_parameters() if p.requires_grad and p.grad is None] == []
