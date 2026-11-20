@@ -393,6 +393,6 @@ How the two runs went (both in one Kaggle session, one GPU each, notebook 04):
   control is automatic (the rules above), and every decision is logged.
 * Parliamentary speech is formal and often prepared; results do not transfer directly to
   conversational Croatian.
-* Compute: every training run had a 6 h budget on one Tesla T4. `rnnt_scratch` and `xlsr_300m_ft`
-  reached it before their last planned epoch, with dev WER still improving, so longer training would
-  likely help them (see their training logs).
+* Compute: every training run had a 6 h budget on one Tesla T4. `rnnt_scratch`,
+  `aed_hybrid_scratch` and `xlsr_300m_ft` reached it before their last planned epoch, with dev WER
+  still improving, so longer training would likely help them (see their training logs).

@@ -1,12 +1,57 @@
 # Fine-tuning: notebooks/04_finetune.ipynb, in its own virtual environment on the Kaggle GPU image
-# (Python 3.13). torch is the version of the Kaggle image; transformers is the version that the
+# (Python 3.13, Tesla T4). torch is the version of the Kaggle image; transformers is the version that the
 # published-checkpoint inference uses (requirements/baselines.txt), so both Whisper runs share it.
-# PROVISIONAL top-level pins; replaced by the complete `pip freeze` of the Kaggle trial run.
+# This is the complete `pip freeze` of that environment in the Kaggle fine-tuning run
+# (top-level: torch==2.11.0+cu130, transformers==4.57.6, huggingface_hub==0.36.2, jiwer==4.0.0).
 --extra-index-url https://download.pytorch.org/whl/cu130
-torch==2.11.0+cu130
-transformers==4.57.6
+certifi==2026.10.23
+charset-normalizer==3.5.2
+click==8.5.1
+cuda-bindings==13.5.0
+cuda-pathfinder==1.9.1
+cuda-toolkit==13.0.2
+filelock==4.2.12
+fsspec==2026.9.0
+hf-xet==1.8.0
 huggingface_hub==0.36.2
-numpy==2.4.4
-PyYAML==6.0.3
+idna==3.20
+iniconfig==2.3.1
+Jinja2==3.1.6
 jiwer==4.0.0
+MarkupSafe==3.0.4
+mpmath==1.3.0
+networkx==3.7
+numpy==2.4.4
+nvidia-cublas==13.1.0.3
+nvidia-cuda-cupti==13.0.85
+nvidia-cuda-nvrtc==13.0.88
+nvidia-cuda-runtime==13.0.96
+nvidia-cudnn-cu13==9.19.0.56
+nvidia-cufft==12.0.0.61
+nvidia-cufile==1.15.1.6
+nvidia-curand==10.4.0.35
+nvidia-cusolver==12.0.4.66
+nvidia-cusparse==12.6.3.3
+nvidia-cusparselt-cu13==0.8.0
+nvidia-nccl-cu13==2.28.9
+nvidia-nvjitlink==13.0.88
+nvidia-nvshmem-cu13==3.4.5
+nvidia-nvtx==13.0.85
+packaging==26.3
+pluggy==1.7.0
+Pygments==2.21.0
 pytest==9.2.0
+PyYAML==6.0.3
+RapidFuzz==3.14.6
+regex==2026.11.19
+requests==2.34.2
+safetensors==0.8.0
+setuptools==81.0.0
+sympy==1.14.0
+tokenizers==0.22.2
+torch==2.11.0+cu130
+tqdm==4.70.1
+transformers==4.57.6
+triton==3.6.0
+typing_extensions==4.16.0
+urllib3==2.8.0
