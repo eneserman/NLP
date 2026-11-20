@@ -19,8 +19,10 @@ dev_search:
   # A first run searched lm_weight 2-15 and ins_penalty 0 to -20: the best dev WER was at the edge of that
   # grid (lm_weight 15, ins_penalty 0), with far fewer words than the references. So the grid goes further
   # on both sides (a positive ins_penalty is a bonus for each new character). Chosen on dev only.
-  lm_weight: [5.0, 10.0, 15.0, 20.0, 30.0, 40.0]
-  ins_penalty: [-10.0, 0.0, 10.0, 20.0]
+  # With selection by dev CER (below), the best setting of that grid was lm_weight 5, ins_penalty 0: the
+  # lowest lm_weight of the grid. So the grid also has lm_weight 0-3 (0 = no LM) and ins_penalty -20.
+  lm_weight: [0.0, 1.0, 2.0, 3.0, 5.0, 10.0, 15.0, 20.0, 30.0, 40.0]
+  ins_penalty: [-20.0, -10.0, 0.0, 10.0, 20.0]
 
 # The metric that chooses the decoding setting on dev. Dev WER of this character model is 95.6-100.8%
 # for every setting of the grid (second run, results/train_logs/hrasr-03-gmm-hmm.kaggle.log): WER is

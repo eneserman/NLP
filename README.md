@@ -324,11 +324,14 @@ chose its edge, so the grid was widened (`configs/train_gmm_hmm.yaml`). The seco
 same model again and searched the wider grid by dev WER; its log is
 `results/train_logs/hrasr-03-gmm-hmm.kaggle.log`. Its dev WER was 95.6-100.8% for every setting, so WER
 could not tell the settings apart: the lowest one wrote a third of the reference words. The settings are
-therefore chosen by dev CER (`dev_select_by: cer`). A third run of notebook 03 only decodes the model of
-the second run (`FROM_TRAINED` = that log, with the second run attached as a Kaggle kernel source):
+therefore chosen by dev CER (`dev_select_by: cer`). Notebook 03 can also only decode the model of the
+second run (`FROM_TRAINED` = that log, with the second run attached as a Kaggle kernel source):
 `scripts/train_gmm_hmm.py --from-model` checks that the model gives the logged dev WER of every setting
 again, records dev WER and CER for every setting, and decodes test once with the setting of the lowest
-dev CER. Test was not used for any of these choices.
+dev CER. The first decoding-only run gave the same 24 dev WERs as the second run, and its lowest dev
+CER was at the lowest LM weight of the grid (5). So the grid was widened again (LM weight 0-3,
+insertion penalty -20), and the reported `gmm_hmm` comes from a second decoding-only run with this grid;
+its test output is the only one that was scored. Test was not used for any of these choices.
 
 ## Our contribution
 

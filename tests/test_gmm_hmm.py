@@ -8,8 +8,11 @@ import sys
 import numpy as np
 import pytest
 
-from hrasr.config import ROOT
+from hrasr.config import ROOT, load_config
 from hrasr.gmm_hmm import N_STATES, SIL, GMMHMM, CharBigramLM
+
+GRID = load_config(ROOT / "configs" / "train_gmm_hmm.yaml")["dev_search"]
+N_SETTINGS = len(GRID["lm_weight"]) * len(GRID["ins_penalty"])
 
 CHARS = ["a", "b", "c", " "]
 
@@ -165,9 +168,9 @@ def test_train_gmm_hmm_script_end_to_end(tmp_path):
     pred = tmp_path / "results" / "predictions"
     assert len((pred / "gmm_hmm.test.jsonl").read_text(encoding="utf-8").splitlines()) == 2
     meta = json.loads((pred / "gmm_hmm.meta.json").read_text(encoding="utf-8"))
-    assert meta["trained_by_us"] and meta["decoding"]["lm_weight"] in (5.0, 10.0, 15.0, 20.0, 30.0, 40.0)
+    assert meta["trained_by_us"] and meta["decoding"]["lm_weight"] in GRID["lm_weight"]
     log = json.loads((tmp_path / "results" / "train_logs" / "gmm_hmm.json").read_text(encoding="utf-8"))
-    assert len(log["dev_search"]) == 24 and log["iterations"][-1]["gaussians"] == 16
+    assert len(log["dev_search"]) == N_SETTINGS and log["iterations"][-1]["gaussians"] == 16
 
 
 def test_reads_an_earlier_run_from_its_kaggle_log(tmp_path):
@@ -221,7 +224,7 @@ def test_train_then_decode_only_without_ffmpeg(tmp_path):
     out = subprocess.run(script + ["--out-dir", str(tmp_path / "r1")], env=env, capture_output=True, text=True)
     assert out.returncode == 0, out.stderr[-3000:]
     log1 = json.loads((tmp_path / "r1" / "train_logs" / "gmm_hmm.json").read_text(encoding="utf-8"))
-    assert log1["dev_select_by"] == "cer" and len(log1["dev_search"]) == 24
+    assert log1["dev_select_by"] == "cer" and len(log1["dev_search"]) == N_SETTINGS
     best = min(log1["dev_search"], key=lambda s: (s["dev_cer"], s["lm_weight"], s["ins_penalty"]))
     assert log1["chosen_decoding"] == {"lm_weight": best["lm_weight"], "ins_penalty": best["ins_penalty"]}
     # the run's printed output, as Kaggle stores it, is the training log of a decoding-only run
