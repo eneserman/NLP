@@ -1,6 +1,6 @@
 # Enes Erman (2309111066, eneserman)
 
-## What I did so far
+## What I did
 
 * I chose the language (Croatian), the domain (parliamentary speech) and the source corpus
   (ParlaSpeech-HR 2.0).
@@ -12,13 +12,16 @@
 * I worked on the tests in `tests/` and checked that they pass.
 * I wrote the README and the config files in `configs/`.
 * I prepared the Kaggle notebook `notebooks/00_build_dataset.ipynb`.
+* I set up the Kaggle account used for all runs and defined the rules for the experiments (one test
+  set, choices on dev only, pinned packages, a compute budget).
+* With an AI coding assistant, I added the model code and ran it on Kaggle: the published
+  checkpoints, the four course baselines we trained ourselves, and the fine-tuning of Whisper-small
+  and XLS-R. I reviewed the training logs and the results.
+* I prepared the presentation.
 
 ## Use of AI tools
 
-I used an AI coding assistant to help write and review the code, the tests and the
-documentation. I checked the results, ran the tests and made the decisions myself.
-
-## Not done yet
-
-* The baseline runs and our own fine-tuning have not been run yet. There are no model results
-  in `results/` yet.
+I used an AI coding assistant (Claude Code). It wrote most of the code for inference, training and
+fine-tuning and their tests, ran the Kaggle notebooks with my account, and drafted the
+documentation and the slides. I set the goals and the rules, approved the steps and checked the
+results.
