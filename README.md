@@ -65,7 +65,7 @@ them with our own fine-tuned models.
 | `data/clean/` | Cleaned data: `train.jsonl`, `dev.jsonl`, `test.jsonl`, `silence_probe.jsonl`; logs and reports: `cleaning_log.csv`, `text_fixes.csv`, `cleaning_report.json`, `split_log.csv`, `split_stats.json`. |
 | `data/audio/` | Audio of every raw clip and every no-speech clip, as Opus files in tar shards (`shard_*.tar`, each < 90 MB), and `INDEX.csv`. The raw and the clean manifests point into these shards. |
 | `notebooks/` | Kaggle notebooks: `00_build_dataset.ipynb` runs the data pipeline (CPU); `01_baselines_pretrained.ipynb` runs every published checkpoint (GPU); `02_train_scratch.ipynb` trains one neural baseline from scratch (GPU); `03_train_gmm_hmm.ipynb` trains the GMM-HMM (CPU); `04_finetune.ipynb` runs our fine-tuning (GPU). |
-| `results/` | `predictions/` (raw per-clip output of every system and a `.meta.json` per system), `train_logs/` (training curve and every choice made on dev, for each model we trained; `hrasr-04-finetune.kaggle.log` is the Kaggle log of the fine-tuning run, see "Our contribution"), `scores.*.json`, `RESULTS.*.md`. |
+| `results/` | `predictions/` (raw per-clip output of every system and a `.meta.json` per system), `train_logs/` (training curve and every choice made on dev, for each model we trained; `hrasr-04-finetune.kaggle.log` and `hrasr-03-gmm-hmm.kaggle.log` are the Kaggle logs of training runs whose saved weights were decoded again, see below), `scores.*.json`, `RESULTS.*.md`. |
 | `tests/` | Tests of the data pipeline and the evaluation (see "Tests"); `conftest.py` puts the repository on the Python path. |
 | `requirements/data.txt` | Pinned package versions for the pipeline, scoring and tests. |
 | `requirements/baselines.txt` | Pinned package versions for inference with published checkpoints (own virtual environment on the Kaggle GPU image). |
@@ -311,13 +311,24 @@ Git). Targets are characters of the scoring-normalized text (Croatian spelling i
 
 | System | Model | Training | Chosen on dev |
 |---|---|---|---|
-| `gmm_hmm` | MFCC (39-dim) + 3-state character HMMs + silence, diagonal GMMs up to 16 Gaussians, character bigram LM (`hrasr/gmm_hmm.py`) | flat start, Viterbi re-estimation, mixture splitting; CPU (`configs/train_gmm_hmm.yaml`) | LM weight and insertion penalty |
+| `gmm_hmm` | MFCC (39-dim) + 3-state character HMMs + silence, diagonal GMMs up to 16 Gaussians, character bigram LM (`hrasr/gmm_hmm.py`) | flat start, Viterbi re-estimation, mixture splitting; CPU (`configs/train_gmm_hmm.yaml`) | LM weight and insertion penalty, by dev CER (see below) |
 | `ctc_scratch` | Conformer encoder 12 x 256, CTC (`hrasr/scratch_models.py`) | 80 log-mel, SpecAugment, AdamW + warmup (`configs/train_scratch.yaml`) | epoch (greedy dev WER) |
 | `aed_hybrid_scratch` | the same encoder + 6-layer Transformer decoder, loss 0.3 CTC + 0.7 attention | as above | epoch; beam search rescored with a CTC weight of 0, 0.3 or 0.5 |
 | `rnnt_scratch` | Conformer encoder (4x subsampling) + LSTM prediction network + joint network, RNN-T loss (`hrasr/transducer.py`) | as above | epoch |
 
 Compute budget: each run stops after `max_hours` (6 h on one Tesla T4), so all runs fit the weekly
 Kaggle GPU quota; a run that reaches the budget before its last epoch records this in its log.
+
+How the GMM-HMM was run (notebook 03, CPU): a first run searched a small grid of decoding settings and
+chose its edge, so the grid was widened (`configs/train_gmm_hmm.yaml`). The second run trained the
+same model again and searched the wider grid by dev WER; its log is
+`results/train_logs/hrasr-03-gmm-hmm.kaggle.log`. Its dev WER was 95.6-100.8% for every setting, so WER
+could not tell the settings apart: the lowest one wrote a third of the reference words. The settings are
+therefore chosen by dev CER (`dev_select_by: cer`). A third run of notebook 03 only decodes the model of
+the second run (`FROM_TRAINED` = that log, with the second run attached as a Kaggle kernel source):
+`scripts/train_gmm_hmm.py --from-model` checks that the model gives the logged dev WER of every setting
+again, records dev WER and CER for every setting, and decodes test once with the setting of the lowest
+dev CER. Test was not used for any of these choices.
 
 ## Our contribution
 
@@ -373,7 +384,10 @@ How the two runs went (both in one Kaggle session, one GPU each, notebook 04):
   transcribe a small training set; beam search with CTC rescoring; `scripts/train_scratch.py` end to end.
 * `tests/test_gmm_hmm.py`: Gaussian mixture likelihood, normalized bigram LM, Viterbi alignment with
   optional pauses, flat start, mixture splitting; training from a flat start recovers the true
-  alignments and decodes the training utterances; `scripts/train_gmm_hmm.py` end to end.
+  alignments and decodes the training utterances; `scripts/train_gmm_hmm.py` end to end (with ffmpeg),
+  and without ffmpeg on prepared MFCC: training with the choice by dev CER, then `--from-model` with
+  the run's log, which must give the same predictions and refuses a model that does not match the log;
+  the Kaggle-log reader.
 * `tests/test_finetune.py`: learning-rate schedule, the XLS-R vocabulary and labels, Whisper labels
   with the Croatian prompt; small random Whisper and wav2vec 2.0 models trained with the real code
   learn the training transcripts; batched CTC decoding equals decoding each clip alone; activation

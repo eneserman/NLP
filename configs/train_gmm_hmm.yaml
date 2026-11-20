@@ -21,3 +21,10 @@ dev_search:
   # on both sides (a positive ins_penalty is a bonus for each new character). Chosen on dev only.
   lm_weight: [5.0, 10.0, 15.0, 20.0, 30.0, 40.0]
   ins_penalty: [-10.0, 0.0, 10.0, 20.0]
+
+# The metric that chooses the decoding setting on dev. Dev WER of this character model is 95.6-100.8%
+# for every setting of the grid (second run, results/train_logs/hrasr-03-gmm-hmm.kaggle.log): WER is
+# saturated and cannot tell the settings apart. The lowest dev WER (lm_weight 40, ins_penalty 20) was a
+# setting that writes a third of the reference words, with dev CER 83.4%, against 56.1% for lm_weight
+# 15, ins_penalty 0. So CER chooses; WER and CER are logged for every setting. Test is not used here.
+dev_select_by: cer

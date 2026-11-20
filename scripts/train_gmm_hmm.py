@@ -3,11 +3,16 @@ decode test once. CPU only.
 
 Usage:
   python scripts/train_gmm_hmm.py [--workers 4]
+  python scripts/train_gmm_hmm.py --from-model model.npz --trained-log run.log   # decoding only
+
+The decoding setting is chosen on dev by `dev_select_by` (configs/train_gmm_hmm.yaml). With
+--from-model, the model of an earlier run is decoded; its training iterations come from that run's
+Kaggle log, and the dev WER of every setting it logged must come out again.
 
 Output:
   results/predictions/gmm_hmm.{dev,test,silence}.jsonl and gmm_hmm.meta.json
   results/train_logs/gmm_hmm.json     per iteration: utterances aligned, average log-likelihood per frame;
-                                      dev WER of every decoding setting and the choice
+                                      dev WER and CER of every decoding setting and the choice
   work/models/gmm_hmm/model.npz       the trained model (not in the repository)
 """
 from __future__ import annotations
@@ -64,8 +69,32 @@ def _decode(job):
 
 
 def corpus_wer(refs, hyps) -> float:
+    return corpus_wer_cer(refs, hyps)[0]
+
+
+def corpus_wer_cer(refs, hyps) -> tuple[float, float]:
     c = per_clip_counts(refs, hyps)
-    return float(c["w_err"].sum() / c["w_n"].sum())
+    return float(c["w_err"].sum() / c["w_n"].sum()), float(c["c_err"].sum() / c["c_n"].sum())
+
+
+def from_kaggle_log(path: Path) -> dict:
+    """What an earlier run of this script printed, read from its Kaggle log (a JSON list of
+    {"stream_name", "time", "data"}): training iterations, the dev search and the chosen setting."""
+    items = json.loads(Path(path).read_text(encoding="utf-8"))
+    out: dict = {"iterations": [], "dev_search": [], "chosen_decoding": None}
+    lines = "".join(i.get("data", "") for i in items).splitlines()
+    # Kaggle writes each line of a subprocess twice, one right after the other: keep one of each pair
+    lines = [l for k, l in enumerate(lines) if k == 0 or l != lines[k - 1]]
+    for line in lines:
+        if line.startswith('{"gaussians"'):
+            out["iterations"].append(json.loads(line))
+        elif line.startswith('{"lm_weight"'):
+            out["dev_search"].append(json.loads(line))
+        elif line.startswith('{"chosen_decoding"'):
+            out["chosen_decoding"] = json.loads(line)["chosen_decoding"]
+    if not out["iterations"] or not out["dev_search"] or out["chosen_decoding"] is None:
+        raise SystemExit(f"{path} is not the log of a complete run of scripts/train_gmm_hmm.py")
+    return out
 
 
 def decode_split(model, lm, store_path, n, w, p, workers):
@@ -82,7 +111,13 @@ def main() -> None:
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--limit-train", type=int, default=None, help="first N train clips, for a trial run")
     ap.add_argument("--limit-eval", type=int, default=None, help="first N dev/test/silence clips, for a trial run")
+    ap.add_argument("--from-model", default=None,
+                    help="skip training: the model.npz that an earlier run of this script saved")
+    ap.add_argument("--trained-log", default=None,
+                    help="with --from-model: the Kaggle log of that run (its training iterations and dev search)")
     args = ap.parse_args()
+    if bool(args.from_model) != bool(args.trained_log):
+        raise SystemExit("--from-model and --trained-log go together")
     out_dir = Path(args.out_dir)
     trial = bool(args.limit_train or args.limit_eval)
     if trial and out_dir.resolve() == (ROOT / "results").resolve():
@@ -107,9 +142,21 @@ def main() -> None:
 
     model = GMMHMM(vocab.chars, dim=store.data.shape[1], var_floor=tc["var_floor"])
     log = {"system": SYSTEM, "units": model.units, "iterations": []}
+    earlier = None
+    if args.from_model:
+        # Decoding only: the model and its training log come from an earlier run of this script.
+        earlier = from_kaggle_log(Path(args.trained_log))
+        with np.load(args.from_model) as d:
+            model = GMMHMM.from_state_dict({k: d[k] for k in d.files})
+        if model.units != log["units"]:
+            raise SystemExit("the saved model has other units than this train split")
+        log["iterations"] = earlier["iterations"]
+        log["trained_in"] = {"model": str(args.from_model), "kaggle_log": Path(args.trained_log).as_posix(),
+                             "earlier_dev_search": earlier["dev_search"],
+                             "earlier_chosen_decoding": earlier["chosen_decoding"]}
     t_start = time.time()
     first = True
-    for stage in tc["schedule"]:
+    for stage in ([] if args.from_model else tc["schedule"]):
         while model.means.shape[1] < stage["gaussians"]:
             model.split()
         for it in range(stage["iterations"]):
@@ -132,13 +179,25 @@ def main() -> None:
     lm = CharBigramLM(texts, vocab.chars, k=tc["lm_add_k"])
     refs_dev = [r["text"] for r in rows["dev"]]
     grid = cfg["dev_search"]
+    select_by = cfg.get("dev_select_by", "wer")
+    if select_by not in ("wer", "cer"):
+        raise SystemExit(f"dev_select_by must be wer or cer, not {select_by}")
     search = []
     for w, p in itertools.product(grid["lm_weight"], grid["ins_penalty"]):
         hyps, _ = decode_split(model, lm, paths["dev"], len(rows["dev"]), w, p, args.workers)
-        search.append({"lm_weight": w, "ins_penalty": p, "dev_wer": corpus_wer(refs_dev, [hyps[k] for k in range(len(rows["dev"]))])})
+        wer, cer = corpus_wer_cer(refs_dev, [hyps[k] for k in range(len(rows["dev"]))])
+        search.append({"lm_weight": w, "ins_penalty": p, "dev_wer": wer, "dev_cer": cer})
         print(json.dumps(search[-1]), flush=True)
-    chosen = min(search, key=lambda s: s["dev_wer"])
-    log["dev_search"], log["chosen_decoding"] = search, {k: chosen[k] for k in ("lm_weight", "ins_penalty")}
+    if earlier is not None:
+        # the loaded model must be the one of that run: (almost) the same dev WER for every setting it logged.
+        # Not exactly: another CPU may sum in another order, which can flip a rare tie in the Viterbi search.
+        for old in earlier["dev_search"]:
+            new = next((s for s in search if s["lm_weight"] == old["lm_weight"] and s["ins_penalty"] == old["ins_penalty"]), None)
+            if new is not None and abs(new["dev_wer"] - old["dev_wer"]) > 0.002:
+                raise SystemExit(f"{args.from_model} does not give the logged dev WER: {new} vs {old}")
+    chosen = min(search, key=lambda s: (s[f"dev_{select_by}"], s["lm_weight"], s["ins_penalty"]))
+    log["dev_search"], log["dev_select_by"] = search, select_by
+    log["chosen_decoding"] = {k: chosen[k] for k in ("lm_weight", "ins_penalty")}
 
     timing = {}
     pred_dir = out_dir / "predictions"
@@ -153,7 +212,9 @@ def main() -> None:
         "setup": (f"MFCC 39-dim, {len(model.units) - 1} character HMMs + silence, 3 states, {n_gauss} Gaussians per state, "
                   f"character bigram LM; trained from scratch on our train split"),
         "checkpoint": None, "revision": None, "language": "Croatian only (trained on our data)",
-        "decoding": log["chosen_decoding"], "train_settings": tc, "features": cfg["features"],
+        "decoding": log["chosen_decoding"], "decoding_chosen_by": f"dev {select_by.upper()}",
+        "trained_in": log.get("trained_in", {}).get("model") if earlier is not None else None,
+        "train_settings": tc, "features": cfg["features"],
         "gpu": "cpu", "precision": "fp64 (numpy)", "batch_size": 1, "workers": args.workers,
         "audio_seconds": timing["test"]["audio_seconds"], "compute_seconds": timing["test"]["compute_seconds"],
         "timing_split": "test", "timing_note": f"Viterbi decoding on precomputed MFCC, {args.workers} CPU processes",
