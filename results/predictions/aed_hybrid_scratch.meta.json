@@ -1,0 +1,81 @@
+{
+  "kind": "baseline",
+  "trained_by_us": true,
+  "system": "aed_hybrid_scratch",
+  "family": "Neural: attention encoder-decoder, hybrid CTC/attention",
+  "setup": "Conformer 12x256 (24.9 M parameters), characters, trained from scratch on our train split, epoch 32 chosen on dev",
+  "checkpoint": null,
+  "revision": null,
+  "language": "Croatian only (trained on our data)",
+  "model_type": "aed",
+  "encoder": {
+    "n_mels": 80,
+    "d_model": 256,
+    "n_layers": 12,
+    "heads": 4,
+    "ff": 1024,
+    "kernel": 15,
+    "dropout": 0.1,
+    "time_stride": 2
+  },
+  "decoder": {
+    "dec_layers": 6,
+    "dec_ff": 1024,
+    "dec_heads": 4,
+    "dropout": 0.1,
+    "ctc_weight": 0.3,
+    "label_smoothing": 0.1
+  },
+  "transducer": null,
+  "decoding": {
+    "beam": 5,
+    "ctc_lambda": 0.3
+  },
+  "features": "logmel",
+  "train_settings": {
+    "epochs": 40,
+    "max_frames": 24000,
+    "max_items": 64,
+    "peak_lr": 0.0015,
+    "warmup_steps": 4000,
+    "weight_decay": 0.001,
+    "grad_clip": 5.0,
+    "spec_augment": true,
+    "eval_every": 2,
+    "max_hours": 6.0
+  },
+  "epochs_run": 32,
+  "chosen_epoch": 32,
+  "params": 24942348,
+  "gpu": "Tesla T4",
+  "precision": "fp16 mixed (torch.autocast)",
+  "batch_size": "up to 24000 padded frames",
+  "audio_seconds": 23822.8,
+  "compute_seconds": 1961.35,
+  "timing_split": "test",
+  "timing_note": "model forward and decoding on precomputed log-mel features",
+  "timing": {
+    "dev": {
+      "clips": 2254,
+      "audio_seconds": 22749.66,
+      "compute_seconds": 1598.82
+    },
+    "test": {
+      "clips": 2021,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 1961.35
+    },
+    "silence": {
+      "clips": 60,
+      "audio_seconds": 358.31,
+      "compute_seconds": 14.05
+    }
+  },
+  "seed": 20261119,
+  "versions": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "numpy": "2.4.4"
+  },
+  "trial": false
+}
