@@ -15,9 +15,11 @@ them with our own fine-tuned models.
   the full archives. The exact commit is recorded in `data/raw/SOURCE.json`.
 * The source has no train/dev/test split. We make our own (see "Split").
 
-> Status: the data pipeline, the scoring code and the tests are finished. Baseline and training
-> results are produced by the notebooks in `notebooks/`. Every number in this repository comes
-> from a committed file: `data/clean/*.json` for the data, `results/RESULTS.test.md` for the models.
+> Status: finished. The dataset, every baseline that supports Croatian, the four course baselines
+> that we trained ourselves and our two fine-tuned models are run and scored on the same test set.
+> The results are in `results/RESULTS.test.md` (and `results/RESULTS.dev.md`), written by
+> `scripts/score.py`. Every number in this repository comes from a committed file:
+> `data/clean/*.json` for the data, `results/` for the models.
 
 ## Repository layout
 
@@ -288,18 +290,18 @@ reported in its own table.
 
 | Family | Checkpoint / setup | Status |
 |---|---|---|
-| MFCC + GMM-HMM | trained by us | planned |
-| CTC encoder | trained by us | planned |
-| Attention encoder-decoder, hybrid CTC/attention | trained by us | planned |
-| Transducer (RNN-T) | trained by us | planned |
-| CTC encoder (Conformer-CTC, Croatian) | `nvidia/stt_hr_conformer_ctc_large` | planned |
-| Transducer (Conformer-Transducer, Croatian) | `nvidia/stt_hr_conformer_transducer_large` | planned |
-| Hybrid transducer/CTC (FastConformer, Croatian) | `nvidia/stt_hr_fastconformer_hybrid_large_pc` | planned |
-| wav2vec 2.0 + CTC (Croatian fine-tune) | `classla/wav2vec2-xls-r-parlaspeech-hr` | planned |
+| MFCC + GMM-HMM | trained by us | run: `gmm_hmm` |
+| CTC encoder | trained by us | run: `ctc_scratch` |
+| Attention encoder-decoder, hybrid CTC/attention | trained by us | run: `aed_hybrid_scratch` |
+| Transducer (RNN-T) | trained by us | run: `rnnt_scratch` |
+| CTC encoder (Conformer-CTC, Croatian) | `nvidia/stt_hr_conformer_ctc_large` | run: `nemo_hr_conformer_ctc` |
+| Transducer (Conformer-Transducer, Croatian) | `nvidia/stt_hr_conformer_transducer_large` | run: `nemo_hr_conformer_transducer` |
+| Hybrid transducer/CTC (FastConformer, Croatian) | `nvidia/stt_hr_fastconformer_hybrid_large_pc` | run: `nemo_hr_fastconformer_hybrid` |
+| wav2vec 2.0 + CTC (Croatian fine-tune) | `classla/wav2vec2-xls-r-parlaspeech-hr` | run: `w2v2_classla_hr` |
 | HuBERT + CTC | none: no HuBERT checkpoint with a Croatian ASR head found (searched 2026-11-19); a bare encoder cannot transcribe | not available |
-| Whisper (multilingual) | `openai/whisper-small` | planned |
-| Canary | `nvidia/canary-1b-v2` | planned |
-| Parakeet TDT | `nvidia/parakeet-tdt-0.6b-v3` | planned |
+| Whisper (multilingual) | `openai/whisper-small` | run: `whisper_small` |
+| Canary | `nvidia/canary-1b-v2` | run: `canary_1b_v2` |
+| Parakeet TDT | `nvidia/parakeet-tdt-0.6b-v3` | run: `parakeet_tdt_v3` |
 | Qwen3-ASR | `Qwen/Qwen3-ASR-1.7B`, `Qwen/Qwen3-ASR-0.6B` | not run: Croatian is not a supported language ([1.7B card](https://huggingface.co/Qwen/Qwen3-ASR-1.7B), [0.6B card](https://huggingface.co/Qwen/Qwen3-ASR-0.6B)) |
 
 ### Course baselines that we trained ourselves

@@ -21,40 +21,53 @@
 
 | System | Family | Checkpoint / setup | WER % (95% CI) | CER % (95% CI) | RTFx |
 |---|---|---|---|---|---|
-| gmm_hmm | Classical: MFCC + GMM-HMM | | not run yet | | |
-| ctc_scratch | Neural: CTC encoder | | not run yet | | |
-| aed_hybrid_scratch | Neural: attention encoder-decoder, hybrid CTC/attention | | not run yet | | |
-| rnnt_scratch | Neural: transducer (RNN-T) | | not run yet | | |
+| gmm_hmm | Classical: MFCC + GMM-HMM | MFCC 39-dim, 34 character HMMs + silence, 3 states, 16 Gaussians per state, character bigram LM; trained from scratch on our train split | 96.49 (96.28-96.69) | 44.60 (44.30-44.89) | 123.2 |
+| ctc_scratch | Neural: CTC encoder | Conformer 12x256 (18.6 M parameters), characters, trained from scratch on our train split, epoch 40 chosen on dev | 25.27 (24.68-25.86) | 6.66 (6.47-6.86) | 1559.1 |
+| aed_hybrid_scratch | Neural: attention encoder-decoder, hybrid CTC/attention | Conformer 12x256 (24.9 M parameters), characters, trained from scratch on our train split, epoch 32 chosen on dev | 25.69 (24.76-26.58) | 12.88 (12.03-13.73) | 12.1 |
+| rnnt_scratch | Neural: transducer (RNN-T) | Conformer 12x256 (19.5 M parameters), characters, trained from scratch on our train split, epoch 29 chosen on dev | 21.93 (21.40-22.47) | 7.58 (7.35-7.82) | 139.7 |
 
 ## 3. Our contribution: our own fine-tuning
 
 | System | Family | Checkpoint / setup | WER % (95% CI) | CER % (95% CI) | RTFx |
 |---|---|---|---|---|---|
-| - | | | not run yet | | |
+| whisper_small_ft | Ours: Whisper-small (multilingual encoder-decoder), fully fine-tuned | `openai/whisper-small` @ `973afd2496` fine-tuned on our train split (62.5 h), step 4281 of 4281 chosen on dev | 11.77 (11.39-12.18) | 3.62 (3.47-3.78) | 18.0 |
+| xlsr_300m_ft | Ours: wav2vec 2.0 XLS-R 300M + CTC head over characters, fine-tuned | `facebook/wav2vec2-xls-r-300m` @ `1a640f32ac` fine-tuned on our train split (62.5 h), step 7050 of 7050 chosen on dev | 10.45 (10.05-10.84) | 2.87 (2.74-3.00) | 132.0 |
 
 ## 4. Important words (W9 slide 13): recall of reference words by category
 
 | System | All words | Names | Negation | Most missed names |
 |---|---|---|---|---|
+| aed_hybrid_scratch | 78.29 (53144) | 66.84 (1743) | 84.21 (1140) | a ×27, hs ×20, u ×12, beroša ×9, bih ×8 |
 | canary_1b_v2 | 94.55 (53144) | 74.24 (1743) | 97.19 (1140) | rh ×91, a ×37, hdz ×37, bih ×35, hs ×20 |
+| ctc_scratch | 77.24 (53144) | 59.67 (1743) | 83.16 (1140) | a ×33, hs ×20, rh ×17, u ×14, ustavni ×13 |
+| gmm_hmm | 4.29 (53144) | 0.63 (1743) | 5.53 (1140) | rh ×91, a ×60, eu ×50, hrvatskoj ×45, vlade ×40 |
 | nemo_hr_conformer_ctc | 95.12 (53144) | 70.85 (1743) | 97.54 (1140) | rh ×91, a ×63, hdz ×37, bih ×31, u ×21 |
 | nemo_hr_conformer_transducer | 94.84 (53144) | 70.80 (1743) | 97.11 (1140) | rh ×91, a ×63, hdz ×37, bih ×31, u ×21 |
 | nemo_hr_fastconformer_hybrid | 95.15 (53144) | 75.67 (1743) | 97.19 (1140) | rh ×91, hdz ×37, a ×36, bih ×35, u ×18 |
 | parakeet_tdt_v3 | 93.81 (53144) | 71.89 (1743) | 97.19 (1140) | rh ×91, a ×41, hdz ×37, bih ×35, hs ×20 |
+| rnnt_scratch | 80.63 (53144) | 67.07 (1743) | 86.67 (1140) | a ×33, hs ×20, u ×11, bih ×8, republike ×7 |
 | w2v2_classla_hr | 91.19 (53144) | 68.90 (1743) | 94.21 (1140) | a ×63, hdz ×32, rh ×25, u ×21, hs ×20 |
 | whisper_small | 71.80 (53144) | 45.44 (1743) | 81.05 (1140) | rh ×90, a ×52, eu ×44, bih ×35, hs ×20 |
+| whisper_small_ft | 89.88 (53144) | 78.77 (1743) | 94.74 (1140) | a ×21, hs ×20, u ×11, eu ×9, mosta ×6 |
+| xlsr_300m_ft | 90.78 (53144) | 78.37 (1743) | 94.39 (1140) | a ×27, hs ×20, hrvatskoj ×15, u ×13, eu ×7 |
 
 ## 5. No-speech clips (W9 slide 44): output on silence and noise
 
 | System | Clips with any output | Words emitted | Audio (s) |
 |---|---|---|---|
+| aed_hybrid_scratch | 60 / 60 | 703 | 358.31 |
 | canary_1b_v2 | 2 / 60 | 2 | 358.31 |
+| ctc_scratch | 60 / 60 | 73 | 358.31 |
+| gmm_hmm | 40 / 60 | 375 | 358.31 |
 | nemo_hr_conformer_ctc | 12 / 60 | 12 | 358.31 |
 | nemo_hr_conformer_transducer | 1 / 60 | 1 | 358.31 |
 | nemo_hr_fastconformer_hybrid | 0 / 60 | 0 | 358.31 |
 | parakeet_tdt_v3 | 2 / 60 | 3 | 358.31 |
+| rnnt_scratch | 55 / 60 | 92 | 358.31 |
 | w2v2_classla_hr | 33 / 60 | 33 | 358.31 |
 | whisper_small | 60 / 60 | 4205 | 358.31 |
+| whisper_small_ft | 60 / 60 | 6674 | 358.31 |
+| xlsr_300m_ft | 0 / 60 | 0 | 358.31 |
 
 ## 6. WER % by subgroup of the reference clips (clips per group in brackets)
 
@@ -62,34 +75,52 @@
 
 | System | slow (751) | medium (751) | fast (752) |
 |---|---|---|---|
+| aed_hybrid_scratch | 24.82 | 25.45 | 26.75 |
 | canary_1b_v2 | 5.78 | 6.16 | 7.14 |
+| ctc_scratch | 21.98 | 25.09 | 28.45 |
+| gmm_hmm | 97.41 | 95.80 | 96.44 |
 | nemo_hr_conformer_ctc | 6.07 | 6.21 | 6.16 |
 | nemo_hr_conformer_transducer | 6.16 | 6.46 | 6.55 |
 | nemo_hr_fastconformer_hybrid | 5.15 | 5.74 | 6.17 |
 | parakeet_tdt_v3 | 6.45 | 7.18 | 7.88 |
+| rnnt_scratch | 18.83 | 22.00 | 24.65 |
 | w2v2_classla_hr | 8.27 | 9.67 | 11.51 |
 | whisper_small | 33.69 | 31.74 | 32.95 |
+| whisper_small_ft | 9.82 | 11.80 | 13.50 |
+| xlsr_300m_ft | 8.50 | 10.49 | 12.16 |
 
 ### Speaker gender
 
 | System | F (1074) | M (1073) | unknown (107) |
 |---|---|---|---|
+| aed_hybrid_scratch | 23.29 | 27.60 | 29.94 |
 | canary_1b_v2 | 5.64 | 7.01 | 7.06 |
+| ctc_scratch | 22.54 | 27.82 | 26.71 |
+| gmm_hmm | 97.01 | 96.11 | 95.26 |
 | nemo_hr_conformer_ctc | 5.49 | 6.64 | 7.65 |
 | nemo_hr_conformer_transducer | 5.77 | 6.91 | 7.44 |
 | nemo_hr_fastconformer_hybrid | 4.94 | 6.31 | 7.06 |
 | parakeet_tdt_v3 | 6.41 | 7.86 | 8.25 |
+| rnnt_scratch | 19.54 | 24.10 | 23.80 |
 | w2v2_classla_hr | 8.27 | 11.29 | 11.16 |
 | whisper_small | 31.20 | 32.90 | 44.54 |
+| whisper_small_ft | 10.04 | 13.20 | 14.39 |
+| xlsr_300m_ft | 8.88 | 11.76 | 12.60 |
 
 ### Clip length
 
 | System | 0-5 s (597) | 5-10 s (663) | 10-20 s (779) | >= 20 s (215) |
 |---|---|---|---|---|
+| aed_hybrid_scratch | 23.03 | 22.64 | 22.94 | 36.26 |
 | canary_1b_v2 | 6.89 | 6.73 | 6.10 | 6.37 |
+| ctc_scratch | 26.16 | 26.41 | 25.08 | 24.10 |
+| gmm_hmm | 100.06 | 97.03 | 95.93 | 95.68 |
 | nemo_hr_conformer_ctc | 5.45 | 6.37 | 6.06 | 6.41 |
 | nemo_hr_conformer_transducer | 6.44 | 6.61 | 6.14 | 6.74 |
 | nemo_hr_fastconformer_hybrid | 4.98 | 5.88 | 5.66 | 5.92 |
 | parakeet_tdt_v3 | 8.00 | 7.24 | 7.01 | 7.23 |
+| rnnt_scratch | 22.58 | 22.77 | 21.56 | 21.59 |
 | w2v2_classla_hr | 10.41 | 10.36 | 9.49 | 9.92 |
 | whisper_small | 38.65 | 34.46 | 32.25 | 29.44 |
+| whisper_small_ft | 12.88 | 12.70 | 11.47 | 11.01 |
+| xlsr_300m_ft | 10.45 | 10.42 | 10.40 | 10.59 |

@@ -1,0 +1,74 @@
+{
+  "kind": "baseline",
+  "trained_by_us": true,
+  "system": "gmm_hmm",
+  "family": "Classical: MFCC + GMM-HMM",
+  "setup": "MFCC 39-dim, 34 character HMMs + silence, 3 states, 16 Gaussians per state, character bigram LM; trained from scratch on our train split",
+  "checkpoint": null,
+  "revision": null,
+  "language": "Croatian only (trained on our data)",
+  "decoding": {
+    "lm_weight": 3.0,
+    "ins_penalty": 0.0
+  },
+  "decoding_chosen_by": "dev CER",
+  "trained_in": "/kaggle/input/notebooks/eneserman/hrasr-03-gmm-hmm/gmm_hmm_model.npz",
+  "train_settings": {
+    "schedule": [
+      {
+        "gaussians": 1,
+        "iterations": 5
+      },
+      {
+        "gaussians": 2,
+        "iterations": 3
+      },
+      {
+        "gaussians": 4,
+        "iterations": 3
+      },
+      {
+        "gaussians": 8,
+        "iterations": 3
+      },
+      {
+        "gaussians": 16,
+        "iterations": 3
+      }
+    ],
+    "var_floor": 0.001,
+    "lm_add_k": 0.1
+  },
+  "features": "mfcc",
+  "gpu": "cpu",
+  "precision": "fp64 (numpy)",
+  "batch_size": 1,
+  "workers": 4,
+  "audio_seconds": 23822.8,
+  "compute_seconds": 193.29,
+  "timing_split": "test",
+  "timing_note": "Viterbi decoding on precomputed MFCC, 4 CPU processes",
+  "timing": {
+    "dev": {
+      "clips": 2254,
+      "audio_seconds": 22749.66,
+      "compute_seconds": 195.35
+    },
+    "test": {
+      "clips": 2021,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 193.29
+    },
+    "silence": {
+      "clips": 60,
+      "audio_seconds": 358.31,
+      "compute_seconds": 4.25
+    }
+  },
+  "seed": 20261119,
+  "trial": false,
+  "versions": {
+    "python": "3.13.18",
+    "numpy": "2.4.4"
+  }
+}
