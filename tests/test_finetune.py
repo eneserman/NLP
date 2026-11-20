@@ -180,6 +180,9 @@ def test_finetune_script_end_to_end(whisper_proc, tmp_path):
     write_jsonl(data / "clean" / "silence_probe.jsonl", clips("si", 1, ""))
     import re
     cfg = re.sub(r"eval_every_steps: \d+", "eval_every_steps: 2", (ROOT / "configs" / "finetune.yaml").read_text(encoding="utf-8"))
+    # 2 train clips, batch 1, 2 batches per optimizer step: one step per epoch, so 5 steps = 5 epochs
+    cfg = re.sub(r"batch_size: \d+", "batch_size: 1", cfg)
+    assert "grad_accum: 2" in cfg
     (tmp_path / "cfg.yaml").write_text(cfg, encoding="utf-8")
     env = {**os.environ, "HRASR_DATA": str(data), "HRASR_WORK": str(work), "PYTHONPATH": str(ROOT)}
     out = subprocess.run([sys.executable, str(ROOT / "scripts" / "finetune.py"), "--system", "whisper_small_ft",
@@ -190,5 +193,40 @@ def test_finetune_script_end_to_end(whisper_proc, tmp_path):
     assert meta["kind"] == "ours" and meta["trial"] and meta["chosen_step"] in (2, 4, 5)
     log = json.loads((tmp_path / "results" / "train_logs" / "whisper_small_ft.json").read_text(encoding="utf-8"))
     assert [e["step"] for e in log["evals"]] == [2, 4, 5] and {s["num_beams"] for s in log["dev_search"]} == {1, 5}
+    assert log["grad_accum"] == 2 and log["steps_per_epoch"] == 1 and [e["epoch"] for e in log["evals"]] == [2.0, 4.0, 5.0]
+    assert "x 2 accumulated" in meta["batch_size"]
     for split, n in (("dev", 2), ("test", 2), ("silence", 1)):
         assert len((tmp_path / "results" / "predictions" / f"whisper_small_ft.{split}.jsonl").read_text(encoding="utf-8").splitlines()) == n
+
+
+def test_gradient_checkpointing_trains_and_generates_with_cache(whisper_proc, tmp_path):
+    """The settings of configs/finetune.yaml: gradient checkpointing on (config.use_cache off for training);
+    training still lowers the loss, and generation still uses the key/value cache."""
+    _, proc_dir = whisper_proc
+    _tiny_whisper(proc_dir, tmp_path / "tiny")
+    m = {"language": "hr", "train": {"batch_size": 2, "gradient_checkpointing": True}, "eval_batch_size": 2}
+    sysobj = finetune.Whisper(str(tmp_path / "tiny"), m, "cpu")
+    assert sysobj.model.is_gradient_checkpointing and sysobj.model.config.use_cache is False
+    store = fake_store()
+    first, last = _train(sysobj, store, 150, 3e-3)
+    assert last < 0.05 * first
+    calls = []
+    orig = sysobj.model.generate
+    sysobj.model.generate = lambda *a, **k: (calls.append(k.get("use_cache")), orig(*a, **k))[1]
+    assert sysobj.decode(store, [0, 1]) == TEXTS and calls == [True]
+
+
+def test_xlsr_gradient_checkpointing_flag(tmp_path):
+    from transformers import Wav2Vec2Config, Wav2Vec2ForCTC
+    cfg = Wav2Vec2Config(vocab_size=32, hidden_size=32, num_hidden_layers=1, num_attention_heads=2, intermediate_size=64,
+                         conv_dim=(16, 16), conv_stride=(5, 4), conv_kernel=(10, 8), num_feat_extract_layers=2,
+                         feat_extract_norm="layer", do_stable_layer_norm=True, num_conv_pos_embeddings=16,
+                         num_conv_pos_embedding_groups=4)
+    Wav2Vec2ForCTC(cfg).save_pretrained(tmp_path / "base")
+    m = {"model": {"layerdrop": 0.0, "mask_time_prob": 0.0}, "train": {"max_samples": 10 ** 7, "max_items": 8,
+         "gradient_checkpointing": True}, "eval_max_samples": 10 ** 7}
+    sysobj = finetune.XLSR(str(tmp_path / "base"), m, "cpu", TEXTS, tmp_path / "work")
+    assert sysobj.model.is_gradient_checkpointing
+    loss = sysobj.loss(fake_store((8000, 6000)), [0, 1])
+    loss.backward()
+    assert torch.isfinite(loss) and any(p.grad is not None for p in sysobj.model.lm_head.parameters())

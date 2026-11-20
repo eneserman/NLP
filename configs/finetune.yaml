@@ -13,7 +13,9 @@ models:
     language: hr
     train:
       epochs: 3
-      batch_size: 16
+      batch_size: 8               # 16 does not fit in the 15 GB of a T4 (CUDA out of memory in the Kaggle trial)
+      grad_accum: 2               # so one optimizer step still sees 16 clips
+      gradient_checkpointing: true  # less activation memory on the T4, at some extra compute
       peak_lr: 1.0e-5
       warmup_steps: 500
       weight_decay: 0.0
@@ -38,7 +40,9 @@ models:
       ctc_loss_reduction: mean
     train:
       epochs: 15
-      max_samples: 3200000        # padded samples per batch (200 s of audio)
+      max_samples: 1600000        # padded samples per batch (100 s of audio)
+      grad_accum: 2               # so one optimizer step still sees 200 s of audio
+      gradient_checkpointing: true
       max_items: 32
       peak_lr: 1.0e-4
       warmup_steps: 1000

@@ -63,6 +63,9 @@ class Whisper:
         self.proc = WhisperProcessor.from_pretrained(local)
         self.model = WhisperForConditionalGeneration.from_pretrained(local).to(device)
         self.model.generation_config.forced_decoder_ids = None
+        if m.get("train", {}).get("gradient_checkpointing"):
+            self.model.config.use_cache = False          # required with gradient checkpointing during training
+            self.model.gradient_checkpointing_enable()
         self.m, self.device = m, device
 
     def batches(self, store: WaveStore, rng):
@@ -83,7 +86,8 @@ class Whisper:
         feats = self.proc.feature_extractor([store.get(k) for k in idx], sampling_rate=16000,
                                             return_tensors="pt").input_features.to(self.device)
         out = self.model.generate(feats, language=self.m["language"], task="transcribe", num_beams=num_beams,
-                                  do_sample=False, max_new_tokens=440)
+                                  do_sample=False, max_new_tokens=440,
+                                  use_cache=True)   # config.use_cache is off for gradient checkpointing in training
         return list(self.proc.batch_decode(out, skip_special_tokens=True))
 
     def eval_batches(self, store):
@@ -109,6 +113,8 @@ class XLSR:
             local, vocab_size=len(self.vocab), pad_token_id=self.vocab["[PAD]"], ctc_zero_infinity=True,
             ignore_mismatched_sizes=True, **m["model"]).to(device)
         self.model.freeze_feature_encoder()
+        if m.get("train", {}).get("gradient_checkpointing"):
+            self.model.gradient_checkpointing_enable()
         self.m, self.device = m, device
 
     def _inputs(self, store, idx):
@@ -204,7 +210,7 @@ def main() -> None:
     else:
         from huggingface_hub import snapshot_download
         local = snapshot_download(m["base"], revision=m["revision"],
-                                  allow_patterns=["*.json", "*.txt", "*.safetensors", "*.model", "vocab*", "merges*"])
+                                  allow_patterns=["*.json", "*.txt", "*.safetensors", "*.bin", "*.model", "vocab*", "merges*"])
         sha = m["revision"]
     work = WORK / "models" / (args.system + ("_trial" if trial else ""))
     work.mkdir(parents=True, exist_ok=True)
@@ -216,10 +222,11 @@ def main() -> None:
     opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=tc["peak_lr"], weight_decay=tc["weight_decay"])
     scaler = torch.amp.GradScaler("cuda", enabled=device == "cuda")
     rng = np.random.default_rng(cfg["seed"])
-    steps_per_epoch = len(sysobj.batches(stores["train"], np.random.default_rng(0)))
+    accum = int(tc.get("grad_accum", 1))       # optimizer step every `accum` batches (loss divided by accum)
+    steps_per_epoch = len(sysobj.batches(stores["train"], np.random.default_rng(0))) // accum
     total = args.max_steps or tc["epochs"] * steps_per_epoch
     log = {"system": args.system, "base": m["base"], "revision": sha, "steps_per_epoch": steps_per_epoch,
-           "total_steps": total, "evals": []}
+           "grad_accum": accum, "total_steps": total, "evals": []}
     best_wer, step, losses, t0 = float("inf"), 0, [], time.time()
     print(f"{args.system}: {sum(p.numel() for p in model.parameters()) / 1e6:.0f} M parameters, {total} steps", flush=True)
 
@@ -238,19 +245,28 @@ def main() -> None:
 
     done = False
     while not done:
-        for idx in sysobj.batches(stores["train"], rng):
+        batches = sysobj.batches(stores["train"], rng)
+        batches = batches[: len(batches) // accum * accum]        # whole optimizer steps only
+        if not batches:
+            raise SystemExit(f"the train split gives fewer than grad_accum={accum} batches")
+        for k, idx in enumerate(batches):
             model.train()
-            for g in opt.param_groups:
-                g["lr"] = linear_schedule(step, tc["peak_lr"], tc["warmup_steps"], total)
+            if k % accum == 0:
+                for g in opt.param_groups:
+                    g["lr"] = linear_schedule(step, tc["peak_lr"], tc["warmup_steps"], total)
+                opt.zero_grad(set_to_none=True)
+                step_loss = 0.0
             with torch.autocast(device_type="cuda", dtype=torch.float16, enabled=device == "cuda"):
-                loss = sysobj.loss(stores["train"], idx)
-            opt.zero_grad(set_to_none=True)
+                loss = sysobj.loss(stores["train"], idx) / accum
             scaler.scale(loss).backward()
+            step_loss += float(loss.detach())
+            if (k + 1) % accum:
+                continue
             scaler.unscale_(opt)
             torch.nn.utils.clip_grad_norm_(model.parameters(), tc["grad_clip"])
             scaler.step(opt)
             scaler.update()
-            losses.append(float(loss.detach()))
+            losses.append(step_loss)
             step += 1
             out_of_time = (time.time() - t0) / 3600 >= tc["max_hours"]
             if step >= total or out_of_time:
@@ -292,7 +308,8 @@ def main() -> None:
         "model_settings": m.get("model"), "chosen_step": chosen_step, "steps_run": step,
         "gpu": torch.cuda.get_device_name(0) if device == "cuda" else "cpu",
         "precision": "fp16 mixed (torch.autocast)" if device == "cuda" else "fp32",
-        "batch_size": tc.get("batch_size", f"up to {tc.get('max_samples')} padded samples"),
+        "batch_size": (f"{tc['batch_size']} clips" if "batch_size" in tc else f"up to {tc['max_samples']} padded samples")
+                      + f" x {accum} accumulated batches per optimizer step",
         "audio_seconds": timing["test"]["audio_seconds"], "compute_seconds": timing["test"]["compute_seconds"],
         "timing_split": "test", "timing_note": "feature extraction, model forward and decoding (audio already decoded)",
         "timing": timing, "seed": cfg["seed"], "versions": versions(), "trial": trial,
