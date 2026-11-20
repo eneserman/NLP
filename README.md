@@ -65,7 +65,7 @@ them with our own fine-tuned models.
 | `data/clean/` | Cleaned data: `train.jsonl`, `dev.jsonl`, `test.jsonl`, `silence_probe.jsonl`; logs and reports: `cleaning_log.csv`, `text_fixes.csv`, `cleaning_report.json`, `split_log.csv`, `split_stats.json`. |
 | `data/audio/` | Audio of every raw clip and every no-speech clip, as Opus files in tar shards (`shard_*.tar`, each < 90 MB), and `INDEX.csv`. The raw and the clean manifests point into these shards. |
 | `notebooks/` | Kaggle notebooks: `00_build_dataset.ipynb` runs the data pipeline (CPU); `01_baselines_pretrained.ipynb` runs every published checkpoint (GPU); `02_train_scratch.ipynb` trains one neural baseline from scratch (GPU); `03_train_gmm_hmm.ipynb` trains the GMM-HMM (CPU); `04_finetune.ipynb` runs our fine-tuning (GPU). |
-| `results/` | `predictions/` (raw per-clip output of every system and a `.meta.json` per system), `train_logs/` (training curve and every choice made on dev, for each model we trained), `scores.*.json`, `RESULTS.*.md`. |
+| `results/` | `predictions/` (raw per-clip output of every system and a `.meta.json` per system), `train_logs/` (training curve and every choice made on dev, for each model we trained; `hrasr-04-finetune.kaggle.log` is the Kaggle log of the fine-tuning run, see "Our contribution"), `scores.*.json`, `RESULTS.*.md`. |
 | `tests/` | Tests of the data pipeline and the evaluation (see "Tests"); `conftest.py` puts the repository on the Python path. |
 | `requirements/data.txt` | Pinned package versions for the pipeline, scoring and tests. |
 | `requirements/baselines.txt` | Pinned package versions for inference with published checkpoints (own virtual environment on the Kaggle GPU image). |
@@ -302,10 +302,51 @@ reported in its own table.
 | Parakeet TDT | `nvidia/parakeet-tdt-0.6b-v3` | planned |
 | Qwen3-ASR | `Qwen/Qwen3-ASR-1.7B`, `Qwen/Qwen3-ASR-0.6B` | not run: Croatian is not a supported language ([1.7B card](https://huggingface.co/Qwen/Qwen3-ASR-1.7B), [0.6B card](https://huggingface.co/Qwen/Qwen3-ASR-0.6B)) |
 
+### Course baselines that we trained ourselves
+
+All four are trained on our train split only. The checkpoint and the decoding settings are chosen on
+dev; test is decoded once, with everything frozen. Every choice and the training curve are in
+`results/train_logs/<system>.json`; the trained weights stay in the Kaggle outputs (too large for
+Git). Targets are characters of the scoring-normalized text (Croatian spelling is close to phonemic).
+
+| System | Model | Training | Chosen on dev |
+|---|---|---|---|
+| `gmm_hmm` | MFCC (39-dim) + 3-state character HMMs + silence, diagonal GMMs up to 16 Gaussians, character bigram LM (`hrasr/gmm_hmm.py`) | flat start, Viterbi re-estimation, mixture splitting; CPU (`configs/train_gmm_hmm.yaml`) | LM weight and insertion penalty |
+| `ctc_scratch` | Conformer encoder 12 x 256, CTC (`hrasr/scratch_models.py`) | 80 log-mel, SpecAugment, AdamW + warmup (`configs/train_scratch.yaml`) | epoch (greedy dev WER) |
+| `aed_hybrid_scratch` | the same encoder + 6-layer Transformer decoder, loss 0.3 CTC + 0.7 attention | as above | epoch; beam search rescored with a CTC weight of 0, 0.3 or 0.5 |
+| `rnnt_scratch` | Conformer encoder (4x subsampling) + LSTM prediction network + joint network, RNN-T loss (`hrasr/transducer.py`) | as above | epoch |
+
+Compute budget: each run stops after `max_hours` (6 h on one Tesla T4), so all runs fit the weekly
+Kaggle GPU quota; a run that reaches the budget before its last epoch records this in its log.
+
 ## Our contribution
 
-Our own fine-tuning on the train split, with settings and checkpoints chosen on dev and one final
-run on test. Reported in a separate table in `results/RESULTS.test.md`.
+Our own fine-tuning of two pretrained models on the train split (`scripts/finetune.py`,
+`configs/finetune.yaml`), reported in their own table in `results/RESULTS.test.md`:
+
+* `whisper_small_ft`: `openai/whisper-small` (the same revision as the `whisper_small` baseline), all
+  weights trained on the cleaned orthographic transcripts with the Croatian prompt
+  `<|hr|><|transcribe|><|notimestamps|>`. The checkpoint and the beam size (1 or 5) are chosen on dev.
+* `xlsr_300m_ft`: `facebook/wav2vec2-xls-r-300m` with a new CTC head over our characters; the
+  convolutional feature encoder stays frozen. The checkpoint is chosen on dev.
+
+Both use mixed precision, gradient accumulation and activation checkpointing to fit a T4 (settings
+and the reason for each are in the config). Test is decoded once, at the end. The fine-tuned weights
+stay in the Kaggle outputs.
+
+How the two runs went (both in one Kaggle session, one GPU each, notebook 04):
+
+* `xlsr_300m_ft` reached the 6 h budget after 7050 of its 9936 planned optimizer steps (the two
+  trainings shared the CPU, so a step was slower than in the trial run); the last evaluation was the
+  best on dev and is the chosen checkpoint (`results/train_logs/xlsr_300m_ft.json`).
+* `whisper_small_ft` finished training (all 3 epochs), but beam search on dev with 32 clips x 5
+  beams ran out of GPU memory, so the run stopped before writing predictions. The beam search now
+  uses 32 / num_beams clips per batch. The trained weights were kept, so a second run of notebook 04
+  only decodes: `SYSTEMS = ["whisper_small_ft"]`, `FROM_TRAINED = {"whisper_small_ft":
+  "results/train_logs/hrasr-04-finetune.kaggle.log"}`, with the first run attached as a Kaggle
+  kernel source. `scripts/finetune.py --from-trained` reads the dev evaluations of the first run from
+  its log (committed as `results/train_logs/hrasr-04-finetune.kaggle.log`), checks that the loaded
+  weights give the logged dev WER again, and then chooses the beam size on dev and decodes test once.
 
 ## Tests
 
@@ -335,8 +376,10 @@ run on test. Reported in a separate table in `results/RESULTS.test.md`.
   alignments and decodes the training utterances; `scripts/train_gmm_hmm.py` end to end.
 * `tests/test_finetune.py`: learning-rate schedule, the XLS-R vocabulary and labels, Whisper labels
   with the Croatian prompt; small random Whisper and wav2vec 2.0 models trained with the real code
-  learn the training transcripts; batched CTC decoding equals decoding each clip alone;
-  `scripts/finetune.py` end to end.
+  learn the training transcripts; batched CTC decoding equals decoding each clip alone; activation
+  checkpointing gives every trainable parameter a gradient, also over accumulated batches; beam search
+  uses smaller batches; the Kaggle-log reader; `scripts/finetune.py` end to end, with gradient
+  accumulation and in decoding-only mode (`--from-trained`, including the check of the logged dev WER).
 * `tests/test_subgroups.py`: speaking-rate borders and groups, gender and length groups, and that
   the WER of each group equals scoring that group's clips directly.
 * `tests/test_pipeline_e2e.py`: runs steps 1-8 and the unpack script on a synthetic corpus with the
@@ -350,3 +393,6 @@ run on test. Reported in a separate table in `results/RESULTS.test.md`.
   control is automatic (the rules above), and every decision is logged.
 * Parliamentary speech is formal and often prepared; results do not transfer directly to
   conversational Croatian.
+* Compute: every training run had a 6 h budget on one Tesla T4. `rnnt_scratch` and `xlsr_300m_ft`
+  reached it before their last planned epoch, with dev WER still improving, so longer training would
+  likely help them (see their training logs).

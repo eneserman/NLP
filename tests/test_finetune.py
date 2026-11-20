@@ -198,6 +198,30 @@ def test_finetune_script_end_to_end(whisper_proc, tmp_path):
     for split, n in (("dev", 2), ("test", 2), ("silence", 1)):
         assert len((tmp_path / "results" / "predictions" / f"whisper_small_ft.{split}.jsonl").read_text(encoding="utf-8").splitlines()) == n
 
+    # decoding only (--from-trained): weights of an earlier run + its Kaggle log; the logged dev WER is checked
+    def kaggle_log(wer):
+        line = "[whisper_small_ft] " + json.dumps({"step": 5, "dev_wer_greedy": wer, "saved": True}) + chr(10)
+        (tmp_path / "train.log").write_text(json.dumps([{"stream_name": "stdout", "time": 1.0, "data": line}]), encoding="utf-8")
+
+    def decode_only():
+        return subprocess.run([sys.executable, str(ROOT / "scripts" / "finetune.py"), "--system", "whisper_small_ft",
+                               "--config", str(tmp_path / "cfg.yaml"), "--out-dir", str(tmp_path / "results2"),
+                               "--base-dir", str(tmp_path / "tiny"), "--from-trained", str(tmp_path / "tiny"),
+                               "--trained-log", str(tmp_path / "train.log")], env=env, capture_output=True, text=True)
+    kaggle_log(9.9)
+    bad = decode_only()
+    assert bad.returncode != 0 and "do not give the logged dev WER" in bad.stderr + bad.stdout
+    actual = float(re.search(r"\(([0-9.]+) vs 9\.9\)", bad.stderr + bad.stdout).group(1))
+    kaggle_log(actual)
+    ok = decode_only()
+    assert ok.returncode == 0, ok.stderr[-3000:]
+    log2 = json.loads((tmp_path / "results2" / "train_logs" / "whisper_small_ft.json").read_text(encoding="utf-8"))
+    meta2 = json.loads((tmp_path / "results2" / "predictions" / "whisper_small_ft.meta.json").read_text(encoding="utf-8"))
+    assert log2["chosen_step"] == 5 and log2["chosen_dev_wer_greedy_recomputed"] == pytest.approx(actual, abs=0.002)
+    assert meta2["trained_in"]["weights"] == str(tmp_path / "tiny") and meta2["chosen_step"] == 5
+    for split, n in (("dev", 2), ("test", 2), ("silence", 1)):
+        assert len((tmp_path / "results2" / "predictions" / f"whisper_small_ft.{split}.jsonl").read_text(encoding="utf-8").splitlines()) == n
+
 
 def test_gradient_checkpointing_trains_and_generates_with_cache(whisper_proc, tmp_path):
     """The settings of configs/finetune.yaml: gradient checkpointing on (config.use_cache off for training);
@@ -237,3 +261,31 @@ def test_xlsr_gradient_checkpointing_flag(tmp_path):
     assert torch.isfinite(loss) and any(p.grad is not None for p in sysobj.model.lm_head.parameters())
     # every trainable parameter gets a gradient through the checkpointed layers
     assert [n for n, p in sysobj.model.named_parameters() if p.requires_grad and p.grad is None] == []
+
+
+def test_evals_from_kaggle_log_reads_only_that_systems_eval_lines(tmp_path):
+    lines = ['[whisper_small_ft] whisper_small_ft: 242 M parameters, 4281 steps\n',
+             '[xlsr_300m_ft] {"step": 2000, "dev_wer_greedy": 0.15, "saved": true}\n',
+             '[whisper_small_ft] {"step": 1500, "dev_wer_greedy": 0.14, "saved": true}\n',
+             '[whisper_small_ft] {"num_beams": 1, "dev_wer": 0.12}\n',
+             '[whisper_small_ft] {"step": 3000, "dev_wer_greedy": 0.12, "saved": true}\n']
+    # Kaggle splits the output in chunks that do not follow line ends
+    blob = "".join(lines)
+    chunks = [blob[i:i + 37] for i in range(0, len(blob), 37)]
+    (tmp_path / "k.log").write_text(json.dumps([{"stream_name": "stdout", "time": 1.0, "data": c} for c in chunks]),
+                                    encoding="utf-8")
+    ev = finetune.evals_from_kaggle_log(tmp_path / "k.log", "whisper_small_ft")
+    assert [e["step"] for e in ev] == [1500, 3000] and ev[1]["dev_wer_greedy"] == 0.12
+    with pytest.raises(SystemExit):
+        finetune.evals_from_kaggle_log(tmp_path / "k.log", "ctc_scratch")
+
+
+def test_whisper_eval_batches_shrink_with_the_beam(whisper_proc, tmp_path):
+    _, proc_dir = whisper_proc
+    _tiny_whisper(proc_dir, tmp_path / "tiny")
+    sysobj = finetune.Whisper(str(tmp_path / "tiny"), {"language": "hr", "train": {}, "eval_batch_size": 4}, "cpu")
+    store = fake_store((8000, 6000, 7000, 5000, 9000), texts=TEXTS * 3)
+    assert [len(b) for b in sysobj.eval_batches(store)] == [4, 1]
+    assert [len(b) for b in sysobj.eval_batches(store, {"num_beams": 2})] == [2, 2, 1]
+    assert [len(b) for b in sysobj.eval_batches(store, {"num_beams": 5})] == [1] * 5
+    assert sorted(k for b in sysobj.eval_batches(store, {"num_beams": 5}) for k in b) == list(range(5))

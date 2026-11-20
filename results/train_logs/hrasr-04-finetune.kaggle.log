@@ -1,0 +1,259 @@
+[{"stream_name":"stderr","time":6.642893287,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.64294376,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.64294964,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.642954005,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.188503443,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.188533529,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.188538509,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.188542285,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":8.395792949,"data":"No HF_TOKEN secret; using anonymous access\n"}
+,{"stream_name":"stdout","time":8.472859518,"data":"/tmp\n"}
+,{"stream_name":"stdout","time":57.482815581,"data":"/tmp/repo\n"}
+,{"stream_name":"stdout","time":57.482866304,"data":"commit c7d59e93fef302fa77eee5d646e418f11d3c6e98\r\n"}
+,{"stream_name":"stdout","time":63.79554689,"data":"Error in sitecustomize; set PYTHONVERBOSE for traceback:\r\n"}
+,{"stream_name":"stdout","time":63.795580805,"data":"ModuleNotFoundError: No module named 'wrapt'\r\n"}
+,{"stream_name":"stdout","time":170.135789604,"data":"Error in sitecustomize; set PYTHONVERBOSE for traceback:\r\n"}
+,{"stream_name":"stdout","time":170.13583564,"data":"ModuleNotFoundError: No module named 'wrapt'\r\n"}
+,{"stream_name":"stdout","time":170.362616404,"data":"certifi==2026.10.23\r\n"}
+,{"stream_name":"stdout","time":170.362647875,"data":"charset-normalizer==3.5.2\r\n"}
+,{"stream_name":"stdout","time":170.362653464,"data":"click==8.5.1\r\n"}
+,{"stream_name":"stdout","time":170.362657863,"data":"cuda-bindings==13.5.0\r\n"}
+,{"stream_name":"stdout","time":170.362661948,"data":"cuda-pathfinder==1.9.1\r\n"}
+,{"stream_name":"stdout","time":170.362666146,"data":"cuda-toolkit==13.0.2\r\n"}
+,{"stream_name":"stdout","time":170.36267394,"data":"filelock==4.2.12\r\n"}
+,{"stream_name":"stdout","time":170.3626772,"data":"fsspec==2026.9.0\r\n"}
+,{"stream_name":"stdout","time":170.362679833,"data":"hf-xet==1.8.0\r\n"}
+,{"stream_name":"stdout","time":170.362682529,"data":"huggingface_hub==0.36.2\r\n"}
+,{"stream_name":"stdout","time":170.362685396,"data":"idna==3.20\r\n"}
+,{"stream_name":"stdout","time":170.362688163,"data":"iniconfig==2.3.1\r\n"}
+,{"stream_name":"stdout","time":170.362690866,"data":"Jinja2==3.1.6\r\n"}
+,{"stream_name":"stdout","time":170.362693594,"data":"jiwer==4.0.0\r\n"}
+,{"stream_name":"stdout","time":170.362696241,"data":"MarkupSafe==3.0.4\r\n"}
+,{"stream_name":"stdout","time":170.362698911,"data":"mpmath==1.3.0\r\n"}
+,{"stream_name":"stdout","time":170.362701541,"data":"networkx==3.7\r\n"}
+,{"stream_name":"stdout","time":170.362704249,"data":"numpy==2.4.4\r\n"}
+,{"stream_name":"stdout","time":170.362706939,"data":"nvidia-cublas==13.1.0.3\r\n"}
+,{"stream_name":"stdout","time":170.362710358,"data":"nvidia-cuda-cupti==13.0.85\r\n"}
+,{"stream_name":"stdout","time":170.362723943,"data":"nvidia-cuda-nvrtc==13.0.88\r\n"}
+,{"stream_name":"stdout","time":170.362728864,"data":"nvidia-cuda-runtime==13.0.96\r\n"}
+,{"stream_name":"stdout","time":170.362733259,"data":"nvidia-cudnn-cu13==9.19.0.56\r\n"}
+,{"stream_name":"stdout","time":170.362750228,"data":"nvidia-cufft==12.0.0.61\r\n"}
+,{"stream_name":"stdout","time":170.362753641,"data":"nvidia-cufile==1.15.1.6\r\n"}
+,{"stream_name":"stdout","time":170.362756837,"data":"nvidia-curand==10.4.0.35\r\n"}
+,{"stream_name":"stdout","time":170.362759992,"data":"nvidia-cusolver==12.0.4.66\r\n"}
+,{"stream_name":"stdout","time":170.362763213,"data":"nvidia-cusparse==12.6.3.3\r\n"}
+,{"stream_name":"stdout","time":170.362766374,"data":"nvidia-cusparselt-cu13==0.8.0\r\n"}
+,{"stream_name":"stdout","time":170.362769639,"data":"nvidia-nccl-cu13==2.28.9\r\n"}
+,{"stream_name":"stdout","time":170.362772763,"data":"nvidia-nvjitlink==13.0.88\r\n"}
+,{"stream_name":"stdout","time":170.362775945,"data":"nvidia-nvshmem-cu13==3.4.5\r\n"}
+,{"stream_name":"stdout","time":170.362779044,"data":"nvidia-nvtx==13.0.85\r\n"}
+,{"stream_name":"stdout","time":170.362782244,"data":"packaging==26.3\r\n"}
+,{"stream_name":"stdout","time":170.362789368,"data":"pluggy==1.7.0\r\n"}
+,{"stream_name":"stdout","time":170.362791791,"data":"Pygments==2.21.0\r\n"}
+,{"stream_name":"stdout","time":170.362793883,"data":"pytest==9.2.0\r\n"}
+,{"stream_name":"stdout","time":170.362795975,"data":"PyYAML==6.0.3\r\n"}
+,{"stream_name":"stdout","time":170.362798055,"data":"RapidFuzz==3.14.6\r\n"}
+,{"stream_name":"stdout","time":170.362800221,"data":"regex==2026.11.19\r\n"}
+,{"stream_name":"stdout","time":170.362802292,"data":"requests==2.34.2\r\n"}
+,{"stream_name":"stdout","time":170.362805244,"data":"safetensors==0.8.0\r\n"}
+,{"stream_name":"stdout","time":170.362817027,"data":"setuptools==81.0.0\r\n"}
+,{"stream_name":"stdout","time":170.362820655,"data":"sympy==1.14.0\r\n"}
+,{"stream_name":"stdout","time":170.36286052,"data":"tokenizers==0.22.2\r\n"}
+,{"stream_name":"stdout","time":170.362866533,"data":"torch==2.11.0+cu130\r\n"}
+,{"stream_name":"stdout","time":170.36286971,"data":"tqdm==4.70.1\r\n"}
+,{"stream_name":"stdout","time":170.362872864,"data":"transformers==4.57.6\r\n"}
+,{"stream_name":"stdout","time":170.362875957,"data":"triton==3.6.0\r\n"}
+,{"stream_name":"stdout","time":170.362879155,"data":"typing_extensions==4.16.0\r\n"}
+,{"stream_name":"stdout","time":170.362882414,"data":"urllib3==2.8.0\r\n"}
+,{"stream_name":"stdout","time":170.53255923,"data":"Error in sitecustomize; set PYTHONVERBOSE for traceback:\r\n"}
+,{"stream_name":"stdout","time":170.532600168,"data":"ModuleNotFoundError: No module named 'wrapt'\r\n"}
+,{"stream_name":"stdout","time":170.532605085,"data":"sys.path: ['', '/usr/lib/python313.zip', '/usr/lib/python3.13', '/usr/lib/python3.13/lib-dynload', '/tmp/venv/lib/python3.13/site-packages']\r\n"}
+,{"stream_name":"stdout","time":170.67740975,"data":"name, memory.total [MiB]\r\n"}
+,{"stream_name":"stdout","time":170.677438789,"data":"Tesla T4, 15360 MiB\r\n"}
+,{"stream_name":"stdout","time":170.677443099,"data":"Tesla T4, 15360 MiB\r\n"}
+,{"stream_name":"stdout","time":170.845265395,"data":"Error in sitecustomize; set PYTHONVERBOSE for traceback:\r\n"}
+,{"stream_name":"stdout","time":170.845289603,"data":"ModuleNotFoundError: No module named 'wrapt'\r\n"}
+,{"stream_name":"stdout","time":258.282592561,"data":"\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m                                                      [100%]\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":258.282654753,"data":"\u001b[32m\u001b[32m\u001b[1m19 passed\u001b[0m\u001b[32m in 87.27s (0:01:27)\u001b[0m\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":259.47518496,"data":"Error in sitecustomize; set PYTHONVERBOSE for traceback:\r\n"}
+,{"stream_name":"stdout","time":259.4752119,"data":"ModuleNotFoundError: No module named 'wrapt'\r\n"}
+,{"stream_name":"stdout","time":271.828000666,"data":"extracted 16 shards into /tmp/repo/work/audio\r\n"}
+,{"stream_name":"stderr","time":271.99966987,"data":"Error in sitecustomize; set PYTHONVERBOSE for traceback:\n"}
+,{"stream_name":"stderr","time":271.999700048,"data":"ModuleNotFoundError: No module named 'wrapt'\n"}
+,{"stream_name":"stderr","time":272.203288345,"data":"Error in sitecustomize; set PYTHONVERBOSE for traceback:\n"}
+,{"stream_name":"stderr","time":272.203324607,"data":"ModuleNotFoundError: No module named 'wrapt'\n"}
+,{"stream_name":"stderr","time":272.203332018,"data":"\n"}
+,{"stream_name":"stderr","time":272.203352617,"data":"Error in sitecustomize; set PYTHONVERBOSE for traceback:\n"}
+,{"stream_name":"stderr","time":272.203357663,"data":"ModuleNotFoundError: No module named 'wrapt'\n"}
+,{"stream_name":"stdout","time":4712.86933714,"data":"audio ready: train 22834, dev 2254, test 2021, silence 60\n"}
+,{"stream_name":"stdout","time":4713.076372771,"data":"audio ready: train 22834, dev 2254, test 2021, silence 60\n"}
+,{"stream_name":"stdout","time":4713.40995176,"data":"[xlsr_300m_ft] Error in sitecustomize; set PYTHONVERBOSE for traceback:\n"}
+,{"stream_name":"stdout","time":4713.409985224,"data":"[whisper_small_ft] Error in sitecustomize; set PYTHONVERBOSE for traceback:\n"}
+,{"stream_name":"stdout","time":4713.411464617,"data":"[xlsr_300m_ft] ModuleNotFoundError: No module named 'wrapt'\n"}
+,{"stream_name":"stdout","time":4713.411487059,"data":"[whisper_small_ft] ModuleNotFoundError: No module named 'wrapt'\n"}
+,{"stream_name":"stdout","time":4716.968888864,"data":"[xlsr_300m_ft] \n"}
+,{"stream_name":"stdout","time":4717.024285696,"data":"[whisper_small_ft] \n"}
+,{"stream_name":"stdout","time":4717.215716442,"data":"[xlsr_300m_ft] Fetching 3 files:   0%|          | 0/3 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":4717.244256488,"data":"[whisper_small_ft] Fetching 12 files:   0%|          | 0/12 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":4721.610127584,"data":"[xlsr_300m_ft] Fetching 3 files:  33%|███▎      | 1/3 [00:00\u003c00:00,  4.05it/s]\n"}
+,{"stream_name":"stdout","time":4721.619098164,"data":"[xlsr_300m_ft] Fetching 3 files: 100%|██████████| 3/3 [00:04\u003c00:00,  1.54s/it]\n"}
+,{"stream_name":"stdout","time":4721.624207015,"data":"[xlsr_300m_ft] Fetching 3 files: 100%|██████████| 3/3 [00:04\u003c00:00,  1.54s/it]\n"}
+,{"stream_name":"stdout","time":4727.758984403,"data":"[whisper_small_ft] Fetching 12 files:  83%|████████▎ | 10/12 [00:00\u003c00:00, 44.85it/s]\n"}
+,{"stream_name":"stdout","time":4727.760107972,"data":"[whisper_small_ft] Fetching 12 files: 100%|██████████| 12/12 [00:10\u003c00:00,  1.12it/s]\n"}
+,{"stream_name":"stdout","time":4737.510366746,"data":"[xlsr_300m_ft] Some weights of Wav2Vec2ForCTC were not initialized from the model checkpoint at /root/.cache/huggingface/hub/models--facebook--wav2vec2-xls-r-300m/snapshots/1a640f32ac3e39899438a2931f9924c02f080a54 and are newly initialized: ['lm_head.bias', 'lm_head.weight']\n"}
+,{"stream_name":"stdout","time":4737.512083917,"data":"[xlsr_300m_ft] You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.\n"}
+,{"stream_name":"stdout","time":4737.731563411,"data":"[whisper_small_ft] whisper_small_ft: 242 M parameters, 4281 steps\n"}
+,{"stream_name":"stdout","time":4738.152290121,"data":"[xlsr_300m_ft] xlsr_300m_ft: 315 M parameters, 9936 steps\n"}
+,{"stream_name":"stdout","time":8803.609115,"data":"[whisper_small_ft] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.\n"}
+,{"stream_name":"stdout","time":9031.808718429,"data":"[whisper_small_ft] /tmp/venv/lib/python3.13/site-packages/transformers/modeling_utils.py:3918: UserWarning: Moving the following attributes in the config to the generation config: {'max_length': 448, 'suppress_tokens': [1, 2, 7, 8, 9, 10, 14, 25, 26, 27, 28, 29, 31, 58, 59, 60, 61, 62, 63, 90, 91, 92, 93, 359, 503, 522, 542, 873, 893, 902, 918, 922, 931, 1350, 1853, 1982, 2460, 2627, 3246, 3253, 3268, 3536, 3846, 3961, 4183, 4667, 6585, 6647, 7273, 9061, 9383, 10428, 10929, 11938, 12033, 12331, 12562, 13793, 14157, 14635, 15265, 15618, 16553, 16604, 18362, 18956, 20075, 21675, 22520, 26130, 26161, 26435, 28279, 29464, 31650, 32302, 32470, 36865, 42863, 47425, 49870, 50254, 50258, 50360, 50361, 50362], 'begin_suppress_tokens': [220, 50257]}. You are seeing this warning because you've set generation parameters in the model config, as opposed to in the generation config.\n"}
+,{"stream_name":"stdout","time":9031.809697181,"data":"[whisper_small_ft]   warnings.warn(\n"}
+,{"stream_name":"stdout","time":9033.24257771,"data":"[whisper_small_ft] {\"step\": 1500, \"epoch\": 1.051, \"train_loss\": 0.3378782447104653, \"dev_wer_greedy\": 0.14677103718199608, \"hours\": 1.193, \"saved\": true}\n"}
+,{"stream_name":"stdout","time":10896.088435955,"data":"[xlsr_300m_ft] {\"step\": 2000, \"epoch\": 1.61, \"train_loss\": 1.6258959787413478, \"dev_wer_greedy\": 0.15772241457172964, \"hours\": 1.71, \"saved\": true}\n"}
+,{"stream_name":"stdout","time":13317.272736951,"data":"[whisper_small_ft] {\"step\": 3000, \"epoch\": 2.102, \"train_loss\": 0.15063151805785796, \"dev_wer_greedy\": 0.12844347433388528, \"hours\": 2.383, \"saved\": true}\n"}
+,{"stream_name":"stdout","time":17018.227708436,"data":"[whisper_small_ft] {\"step\": 4281, \"epoch\": 3.0, \"train_loss\": 0.09219018817325991, \"dev_wer_greedy\": 0.12648652717145867, \"hours\": 3.411, \"saved\": true}\n"}
+,{"stream_name":"stdout","time":17019.48386469,"data":"[whisper_small_ft] `generation_config` default values have been modified to match model-specific defaults: {'suppress_tokens': [1, 2, 7, 8, 9, 10, 14, 25, 26, 27, 28, 29, 31, 58, 59, 60, 61, 62, 63, 90, 91, 92, 93, 359, 503, 522, 542, 873, 893, 902, 918, 922, 931, 1350, 1853, 1982, 2460, 2627, 3246, 3253, 3268, 3536, 3846, 3961, 4183, 4667, 6585, 6647, 7273, 9061, 9383, 10428, 10929, 11938, 12033, 12331, 12562, 13793, 14157, 14635, 15265, 15618, 16553, 16604, 18362, 18956, 20075, 21675, 22520, 26130, 26161, 26435, 28279, 29464, 31650, 32302, 32470, 36865, 42863, 47425, 49870, 50254, 50258, 50360, 50361, 50362], 'begin_suppress_tokens': [220, 50257]}. If this is not desired, please set these values explicitly.\n"}
+,{"stream_name":"stdout","time":17020.442555196,"data":"[whisper_small_ft] A custom logits processor of type \u003cclass 'transformers.generation.logits_process.SuppressTokensLogitsProcessor'\u003e has been passed to `.generate()`, but it was also created in `.generate()`, given its parameterization. The custom \u003cclass 'transformers.generation.logits_process.SuppressTokensLogitsProcessor'\u003e will take precedence. Please check the docstring of \u003cclass 'transformers.generation.logits_process.SuppressTokensLogitsProcessor'\u003e to see related `.generate()` flags.\n"}
+,{"stream_name":"stdout","time":17020.444070714,"data":"[whisper_small_ft] A custom logits processor of type \u003cclass 'transformers.generation.logits_process.SuppressTokensAtBeginLogitsProcessor'\u003e has been passed to `.generate()`, but it was also created in `.generate()`, given its parameterization. The custom \u003cclass 'transformers.generation.logits_process.SuppressTokensAtBeginLogitsProcessor'\u003e will take precedence. Please check the docstring of \u003cclass 'transformers.generation.logits_process.SuppressTokensAtBeginLogitsProcessor'\u003e to see related `.generate()` flags.\n"}
+,{"stream_name":"stdout","time":17056.485709118,"data":"[xlsr_300m_ft] {\"step\": 4000, \"epoch\": 3.221, \"train_loss\": 0.15773036725865677, \"dev_wer_greedy\": 0.12006999849465604, \"hours\": 3.421, \"saved\": true}\n"}
+,{"stream_name":"stdout","time":17250.912734995,"data":"[whisper_small_ft] {\"num_beams\": 1, \"dev_wer\": 0.12648652717145867}\n"}
+,{"stream_name":"stdout","time":17253.205997332,"data":"[whisper_small_ft] Traceback (most recent call last):\n"}
+,{"stream_name":"stdout","time":17253.209865749,"data":"[whisper_small_ft]   File \"/tmp/repo/scripts/finetune.py\", line 329, in \u003cmodule\u003e\n"}
+,{"stream_name":"stdout","time":17253.211422327,"data":"[whisper_small_ft]     main()\n"}
+,{"stream_name":"stdout","time":17253.212922745,"data":"[whisper_small_ft]     ~~~~^^\n"}
+,{"stream_name":"stdout","time":17253.213418531,"data":"[whisper_small_ft]   File \"/tmp/repo/scripts/finetune.py\", line 291, in main\n"}
+,{"stream_name":"stdout","time":17253.2145206,"data":"[whisper_small_ft]     search.append({**opts, \"dev_wer\": dev_wer(sysobj, stores[\"dev\"], device, opts)})\n"}
+,{"stream_name":"stdout","time":17253.215353765,"data":"[whisper_small_ft]                                       ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.216322779,"data":"[whisper_small_ft]   File \"/tmp/repo/scripts/finetune.py\", line 172, in dev_wer\n"}
+,{"stream_name":"stdout","time":17253.217262004,"data":"[whisper_small_ft]     hyps, _ = decode_store(sysobj, store, device, opts)\n"}
+,{"stream_name":"stdout","time":17253.21822194,"data":"[whisper_small_ft]               ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.219201048,"data":"[whisper_small_ft]   File \"/tmp/repo/scripts/finetune.py\", line 162, in decode_store\n"}
+,{"stream_name":"stdout","time":17253.220121796,"data":"[whisper_small_ft]     hyps = sysobj.decode(store, idx, **opts)\n"}
+,{"stream_name":"stdout","time":17253.221121738,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n"}
+,{"stream_name":"stdout","time":17253.221977183,"data":"[whisper_small_ft]     return func(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.222901733,"data":"[whisper_small_ft]   File \"/tmp/repo/scripts/finetune.py\", line 91, in decode\n"}
+,{"stream_name":"stdout","time":17253.223837981,"data":"[whisper_small_ft]     out = self.model.generate(feats, language=self.m[\"language\"], task=\"transcribe\", num_beams=num_beams,\n"}
+,{"stream_name":"stdout","time":17253.224850023,"data":"[whisper_small_ft]                               do_sample=False, max_new_tokens=440,\n"}
+,{"stream_name":"stdout","time":17253.22569011,"data":"[whisper_small_ft]                               use_cache=True)   # config.use_cache is off for gradient checkpointing in training\n"}
+,{"stream_name":"stdout","time":17253.226692901,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/models/whisper/generation_whisper.py\", line 866, in generate\n"}
+,{"stream_name":"stdout","time":17253.227730635,"data":"[whisper_small_ft]     ) = self.generate_with_fallback(\n"}
+,{"stream_name":"stdout","time":17253.228746015,"data":"[whisper_small_ft]         ~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n"}
+,{"stream_name":"stdout","time":17253.229728956,"data":"[whisper_small_ft]         segment_input=segment_input,\n"}
+,{"stream_name":"stdout","time":17253.230793578,"data":"[whisper_small_ft]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.232058604,"data":"[whisper_small_ft]     ...\u003c15 lines\u003e...\n"}
+,{"stream_name":"stdout","time":17253.23321417,"data":"[whisper_small_ft]         kwargs=kwargs,\n"}
+,{"stream_name":"stdout","time":17253.234225203,"data":"[whisper_small_ft]         ^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.235241509,"data":"[whisper_small_ft]     )\n"}
+,{"stream_name":"stdout","time":17253.236267965,"data":"[whisper_small_ft]     ^\n"}
+,{"stream_name":"stdout","time":17253.237341712,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/models/whisper/generation_whisper.py\", line 1038, in generate_with_fallback\n"}
+,{"stream_name":"stdout","time":17253.238374884,"data":"[whisper_small_ft]     seek_outputs = super().generate(\n"}
+,{"stream_name":"stdout","time":17253.239401816,"data":"[whisper_small_ft]         segment_input,\n"}
+,{"stream_name":"stdout","time":17253.240425099,"data":"[whisper_small_ft]     ...\u003c7 lines\u003e...\n"}
+,{"stream_name":"stdout","time":17253.241449332,"data":"[whisper_small_ft]         **generate_kwargs,\n"}
+,{"stream_name":"stdout","time":17253.242473666,"data":"[whisper_small_ft]     )\n"}
+,{"stream_name":"stdout","time":17253.243602298,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n"}
+,{"stream_name":"stdout","time":17253.2445382,"data":"[whisper_small_ft]     return func(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.245573158,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/generation/utils.py\", line 2566, in generate\n"}
+,{"stream_name":"stdout","time":17253.246635125,"data":"[whisper_small_ft]     result = decoding_method(\n"}
+,{"stream_name":"stdout","time":17253.247671262,"data":"[whisper_small_ft]         self,\n"}
+,{"stream_name":"stdout","time":17253.249110524,"data":"[whisper_small_ft]     ...\u003c5 lines\u003e...\n"}
+,{"stream_name":"stdout","time":17253.250162704,"data":"[whisper_small_ft]         **model_kwargs,\n"}
+,{"stream_name":"stdout","time":17253.251236054,"data":"[whisper_small_ft]     )\n"}
+,{"stream_name":"stdout","time":17253.25228006,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/generation/utils.py\", line 3267, in _beam_search\n"}
+,{"stream_name":"stdout","time":17253.25330965,"data":"[whisper_small_ft]     model_outputs = self(**model_inputs, return_dict=True)\n"}
+,{"stream_name":"stdout","time":17253.254345562,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/nn/modules/module.py\", line 1779, in _wrapped_call_impl\n"}
+,{"stream_name":"stdout","time":17253.255475397,"data":"[whisper_small_ft]     return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.256509198,"data":"[whisper_small_ft]            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.257567073,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/nn/modules/module.py\", line 1790, in _call_impl\n"}
+,{"stream_name":"stdout","time":17253.258599175,"data":"[whisper_small_ft]     return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.259634768,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/models/whisper/modeling_whisper.py\", line 1289, in forward\n"}
+,{"stream_name":"stdout","time":17253.260703742,"data":"[whisper_small_ft]     outputs = self.model(\n"}
+,{"stream_name":"stdout","time":17253.26173898,"data":"[whisper_small_ft]         input_features,\n"}
+,{"stream_name":"stdout","time":17253.262739842,"data":"[whisper_small_ft]     ...\u003c14 lines\u003e...\n"}
+,{"stream_name":"stdout","time":17253.263761221,"data":"[whisper_small_ft]         cache_position=cache_position,\n"}
+,{"stream_name":"stdout","time":17253.264769141,"data":"[whisper_small_ft]     )\n"}
+,{"stream_name":"stdout","time":17253.26577814,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/nn/modules/module.py\", line 1779, in _wrapped_call_impl\n"}
+,{"stream_name":"stdout","time":17253.266762866,"data":"[whisper_small_ft]     return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.267774884,"data":"[whisper_small_ft]            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.268809123,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/nn/modules/module.py\", line 1790, in _call_impl\n"}
+,{"stream_name":"stdout","time":17253.269859009,"data":"[whisper_small_ft]     return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.271001437,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/models/whisper/modeling_whisper.py\", line 1130, in forward\n"}
+,{"stream_name":"stdout","time":17253.272031579,"data":"[whisper_small_ft]     decoder_outputs = self.decoder(\n"}
+,{"stream_name":"stdout","time":17253.273049054,"data":"[whisper_small_ft]         input_ids=decoder_input_ids,\n"}
+,{"stream_name":"stdout","time":17253.274073928,"data":"[whisper_small_ft]     ...\u003c11 lines\u003e...\n"}
+,{"stream_name":"stdout","time":17253.275116303,"data":"[whisper_small_ft]         cache_position=cache_position,\n"}
+,{"stream_name":"stdout","time":17253.276153628,"data":"[whisper_small_ft]     )\n"}
+,{"stream_name":"stdout","time":17253.277168121,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/nn/modules/module.py\", line 1779, in _wrapped_call_impl\n"}
+,{"stream_name":"stdout","time":17253.27829118,"data":"[whisper_small_ft]     return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.279228877,"data":"[whisper_small_ft]            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.280352143,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/nn/modules/module.py\", line 1790, in _call_impl\n"}
+,{"stream_name":"stdout","time":17253.281382974,"data":"[whisper_small_ft]     return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.282445748,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/models/whisper/modeling_whisper.py\", line 929, in forward\n"}
+,{"stream_name":"stdout","time":17253.283480398,"data":"[whisper_small_ft]     layer_outputs = decoder_layer(\n"}
+,{"stream_name":"stdout","time":17253.284932142,"data":"[whisper_small_ft]         hidden_states,\n"}
+,{"stream_name":"stdout","time":17253.285953326,"data":"[whisper_small_ft]     ...\u003c7 lines\u003e...\n"}
+,{"stream_name":"stdout","time":17253.286961945,"data":"[whisper_small_ft]         cache_position=cache_position,\n"}
+,{"stream_name":"stdout","time":17253.287976767,"data":"[whisper_small_ft]     )\n"}
+,{"stream_name":"stdout","time":17253.289054883,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/modeling_layers.py\", line 94, in __call__\n"}
+,{"stream_name":"stdout","time":17253.290185074,"data":"[whisper_small_ft]     return super().__call__(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.291325204,"data":"[whisper_small_ft]            ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.29393618,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/nn/modules/module.py\", line 1779, in _wrapped_call_impl\n"}
+,{"stream_name":"stdout","time":17253.293971254,"data":"[whisper_small_ft]     return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.294372958,"data":"[whisper_small_ft]            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.29545319,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/nn/modules/module.py\", line 1790, in _call_impl\n"}
+,{"stream_name":"stdout","time":17253.296533545,"data":"[whisper_small_ft]     return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.29759974,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/utils/deprecation.py\", line 172, in wrapped_func\n"}
+,{"stream_name":"stdout","time":17253.298588726,"data":"[whisper_small_ft]     return func(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.299540434,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/models/whisper/modeling_whisper.py\", line 519, in forward\n"}
+,{"stream_name":"stdout","time":17253.300525179,"data":"[whisper_small_ft]     hidden_states, cross_attn_weights = self.encoder_attn(\n"}
+,{"stream_name":"stdout","time":17253.3015049,"data":"[whisper_small_ft]                                         ~~~~~~~~~~~~~~~~~^\n"}
+,{"stream_name":"stdout","time":17253.302475087,"data":"[whisper_small_ft]         hidden_states=hidden_states,\n"}
+,{"stream_name":"stdout","time":17253.303343227,"data":"[whisper_small_ft]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.443715482,"data":"[whisper_small_ft]     ...\u003c4 lines\u003e...\n"}
+,{"stream_name":"stdout","time":17253.444812437,"data":"[whisper_small_ft]         output_attentions=output_attentions,\n"}
+,{"stream_name":"stdout","time":17253.445675309,"data":"[whisper_small_ft]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.446569903,"data":"[whisper_small_ft]     )\n"}
+,{"stream_name":"stdout","time":17253.447408869,"data":"[whisper_small_ft]     ^\n"}
+,{"stream_name":"stdout","time":17253.448478794,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/nn/modules/module.py\", line 1779, in _wrapped_call_impl\n"}
+,{"stream_name":"stdout","time":17253.449412659,"data":"[whisper_small_ft]     return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.450301342,"data":"[whisper_small_ft]            ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.451251791,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/torch/nn/modules/module.py\", line 1790, in _call_impl\n"}
+,{"stream_name":"stdout","time":17253.452052985,"data":"[whisper_small_ft]     return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.452892292,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/utils/deprecation.py\", line 172, in wrapped_func\n"}
+,{"stream_name":"stdout","time":17253.453766712,"data":"[whisper_small_ft]     return func(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":17253.454471923,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/models/whisper/modeling_whisper.py\", line 344, in forward\n"}
+,{"stream_name":"stdout","time":17253.455396819,"data":"[whisper_small_ft]     key_states, value_states = past_key_values.update(\n"}
+,{"stream_name":"stdout","time":17253.456376095,"data":"[whisper_small_ft]                                ~~~~~~~~~~~~~~~~~~~~~~^\n"}
+,{"stream_name":"stdout","time":17253.457404189,"data":"[whisper_small_ft]         key_states, value_states, self.layer_idx, {\"cache_position\": cache_position}\n"}
+,{"stream_name":"stdout","time":17253.458251975,"data":"[whisper_small_ft]         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.459130141,"data":"[whisper_small_ft]     )\n"}
+,{"stream_name":"stdout","time":17253.459973066,"data":"[whisper_small_ft]     ^\n"}
+,{"stream_name":"stdout","time":17253.460859358,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/cache_utils.py\", line 776, in update\n"}
+,{"stream_name":"stdout","time":17253.461651092,"data":"[whisper_small_ft]     keys, values = self.layers[layer_idx].update(key_states, value_states, cache_kwargs)\n"}
+,{"stream_name":"stdout","time":17253.462461758,"data":"[whisper_small_ft]                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.463320645,"data":"[whisper_small_ft]   File \"/tmp/venv/lib/python3.13/site-packages/transformers/cache_utils.py\", line 120, in update\n"}
+,{"stream_name":"stdout","time":17253.464256843,"data":"[whisper_small_ft]     self.values = torch.cat([self.values, value_states], dim=-2)\n"}
+,{"stream_name":"stdout","time":17253.465086842,"data":"[whisper_small_ft]                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":17253.466012123,"data":"[whisper_small_ft] torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 352.00 MiB. GPU 0 has a total capacity of 14.56 GiB of which 40.81 MiB is free. Including non-PyTorch memory, this process has 14.52 GiB memory in use. Of the allocated memory 13.62 GiB is allocated by PyTorch, and 772.39 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)\n"}
+,{"stream_name":"stdout","time":17254.512112195,"data":"exit code whisper_small_ft 1\n"}
+,{"stream_name":"stdout","time":23207.580504901,"data":"[xlsr_300m_ft] {\"step\": 6000, \"epoch\": 4.831, \"train_loss\": 0.11077746295486576, \"dev_wer_greedy\": 0.10879873551106428, \"hours\": 5.13, \"saved\": true}\n"}
+,{"stream_name":"stdout","time":26508.476832445,"data":"[xlsr_300m_ft] {\"step\": 7050, \"epoch\": 5.676, \"train_loss\": 0.08936824039955224, \"dev_wer_greedy\": 0.10447087159415927, \"hours\": 6.047, \"saved\": true}\n"}
+,{"stream_name":"stdout","time":26677.312545186,"data":"[xlsr_300m_ft] {\"dev_wer\": 0.10447087159415927}\n"}
+,{"stream_name":"stdout","time":27028.333652046,"data":"[xlsr_300m_ft] {\"chosen_step\": 7050, \"chosen_decoding\": {}, \"timing\": {\"dev\": {\"clips\": 2254, \"audio_seconds\": 22749.66, \"compute_seconds\": 167.4}, \"test\": {\"clips\": 2021, \"audio_seconds\": 23822.8, \"compute_seconds\": 180.48}, \"silence\": {\"clips\": 60, \"audio_seconds\": 358.31, \"compute_seconds\": 3.08}}}\n"}
+,{"stream_name":"stdout","time":27029.212104605,"data":"exit code xlsr_300m_ft 0\n"}
+,{"stream_name":"stdout","time":27029.76651577,"data":"\r\n"}
+,{"stream_name":"stdout","time":27029.766548169,"data":"zip error: Nothing to do! (try: zip -q -r /kaggle/working/results_whisper_small_ft.zip . -i results/predictions/whisper_small_ft.* results/train_logs/whisper_small_ft.json)\r\n"}
+,{"stream_name":"stdout","time":27030.630306868,"data":"total 352K\r\n"}
+,{"stream_name":"stdout","time":27030.630343103,"data":"-rw-r--r-- 1 root root  45K Nov 20 09:29 __notebook__.ipynb\r\n"}
+,{"stream_name":"stdout","time":27030.630347521,"data":"-rw-r--r-- 1 root root 1010 Nov 20 02:02 pip_freeze.txt\r\n"}
+,{"stream_name":"stdout","time":27030.630363912,"data":"-rw-r--r-- 1 root root 289K Nov 20 09:29 results_xlsr_300m_ft.zip\r\n"}
+,{"stream_name":"stdout","time":27030.630382285,"data":"drwxr-xr-x 2 root root 4.0K Nov 20 09:29 whisper_small_ft_best\r\n"}
+,{"stream_name":"stdout","time":27030.630386567,"data":"drwxr-xr-x 2 root root 4.0K Nov 20 09:29 xlsr_300m_ft_best\r\n"}
+,{"stream_name":"stderr","time":27033.432978037,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":27033.43300672,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":27033.61763522,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":27033.617660712,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":27034.456426603,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":27034.549250609,"data":"[NbConvertApp] Writing 31708 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":27037.008600174,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":27037.682740103,"data":"[NbConvertApp] Writing 310967 bytes to __results__.html\n"}
+]

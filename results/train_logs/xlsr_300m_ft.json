@@ -1,0 +1,50 @@
+{
+  "system": "xlsr_300m_ft",
+  "base": "facebook/wav2vec2-xls-r-300m",
+  "revision": "1a640f32ac3e39899438a2931f9924c02f080a54",
+  "steps_per_epoch": 1242,
+  "grad_accum": 2,
+  "total_steps": 9936,
+  "evals": [
+    {
+      "step": 2000,
+      "epoch": 1.61,
+      "train_loss": 1.6258959787413478,
+      "dev_wer_greedy": 0.15772241457172964,
+      "hours": 1.71,
+      "saved": true
+    },
+    {
+      "step": 4000,
+      "epoch": 3.221,
+      "train_loss": 0.15773036725865677,
+      "dev_wer_greedy": 0.12006999849465604,
+      "hours": 3.421,
+      "saved": true
+    },
+    {
+      "step": 6000,
+      "epoch": 4.831,
+      "train_loss": 0.11077746295486576,
+      "dev_wer_greedy": 0.10879873551106428,
+      "hours": 5.13,
+      "saved": true
+    },
+    {
+      "step": 7050,
+      "epoch": 5.676,
+      "train_loss": 0.08936824039955224,
+      "dev_wer_greedy": 0.10447087159415927,
+      "hours": 6.047,
+      "saved": true
+    }
+  ],
+  "chosen_step": 7050,
+  "chosen_dev_wer_greedy": 0.10447087159415927,
+  "dev_search": [
+    {
+      "dev_wer": 0.10447087159415927
+    }
+  ],
+  "chosen_decoding": {}
+}

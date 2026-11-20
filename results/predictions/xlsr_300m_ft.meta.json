@@ -1,0 +1,70 @@
+{
+  "kind": "ours",
+  "system": "xlsr_300m_ft",
+  "family": "Ours: wav2vec 2.0 XLS-R 300M + CTC head over characters, fine-tuned",
+  "setup": "`facebook/wav2vec2-xls-r-300m` @ `1a640f32ac` fine-tuned on our train split (62.5 h), step 7050 of 7050 chosen on dev",
+  "checkpoint": null,
+  "base_checkpoint": "facebook/wav2vec2-xls-r-300m",
+  "base_revision": "1a640f32ac3e39899438a2931f9924c02f080a54",
+  "revision": null,
+  "language": "Croatian only (CTC head trained on our data)",
+  "decoding": {
+    "decoding": "greedy"
+  },
+  "train_settings": {
+    "epochs": 8,
+    "max_samples": 1600000,
+    "grad_accum": 2,
+    "gradient_checkpointing": true,
+    "max_items": 32,
+    "peak_lr": 0.0001,
+    "warmup_steps": 1000,
+    "weight_decay": 0.0,
+    "grad_clip": 1.0,
+    "eval_every_steps": 2000,
+    "max_hours": 6.0
+  },
+  "model_settings": {
+    "attention_dropout": 0.0,
+    "hidden_dropout": 0.0,
+    "feat_proj_dropout": 0.0,
+    "layerdrop": 0.05,
+    "mask_time_prob": 0.05,
+    "ctc_loss_reduction": "mean"
+  },
+  "chosen_step": 7050,
+  "steps_run": 7050,
+  "gpu": "Tesla T4",
+  "precision": "fp16 mixed (torch.autocast)",
+  "batch_size": "up to 1600000 padded samples x 2 accumulated batches per optimizer step",
+  "audio_seconds": 23822.8,
+  "compute_seconds": 180.48,
+  "timing_split": "test",
+  "timing_note": "feature extraction, model forward and decoding (audio already decoded)",
+  "timing": {
+    "dev": {
+      "clips": 2254,
+      "audio_seconds": 22749.66,
+      "compute_seconds": 167.4
+    },
+    "test": {
+      "clips": 2021,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 180.48
+    },
+    "silence": {
+      "clips": 60,
+      "audio_seconds": 358.31,
+      "compute_seconds": 3.08
+    }
+  },
+  "seed": 20261119,
+  "versions": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "transformers": "4.57.6",
+    "numpy": "2.4.4",
+    "huggingface_hub": "0.36.2"
+  },
+  "trial": false
+}

@@ -93,9 +93,11 @@ class Whisper:
                                   use_cache=True)   # config.use_cache is off for gradient checkpointing in training
         return list(self.proc.batch_decode(out, skip_special_tokens=True))
 
-    def eval_batches(self, store):
+    def eval_batches(self, store, opts=None):
+        """Clips per batch = eval_batch_size / num_beams, so beam search holds as many sequences as greedy
+        decoding (32 clips x 5 beams ran out of the T4's memory in the Kaggle run)."""
         order = sorted(range(len(store)), key=lambda k: (-store.samples(k), k))
-        bs = self.m["eval_batch_size"]
+        bs = max(1, self.m["eval_batch_size"] // int((opts or {}).get("num_beams", 1)))
         return [order[i:i + bs] for i in range(0, len(order), bs)]
 
     def save(self, path: Path):
@@ -140,7 +142,7 @@ class XLSR:
         x, mask = self._inputs(store, idx)
         return ctc_decode_valid(self.model, self.proc, x, mask)
 
-    def eval_batches(self, store):
+    def eval_batches(self, store, opts=None):
         return frame_batches([store.samples(k) for k in range(len(store))], self.m["eval_max_samples"], 64, None)
 
     def save(self, path: Path):
@@ -154,7 +156,7 @@ class XLSR:
 
 def decode_store(sysobj, store: WaveStore, device: str, opts: dict) -> tuple[dict[str, str], float]:
     out, seconds = {}, 0.0
-    for idx in sysobj.eval_batches(store):
+    for idx in sysobj.eval_batches(store, opts):
         if device == "cuda":
             torch.cuda.synchronize()
         t0 = time.perf_counter()
@@ -173,6 +175,21 @@ def dev_wer(sysobj, store, device, opts) -> float:
     return corpus_wer([r["text"] for r in store.rows], [hyps[i] for i in store.ids])
 
 
+def evals_from_kaggle_log(path: Path, system: str) -> list[dict]:
+    """The dev evaluations that a training run printed, read from its Kaggle log (a JSON list of
+    {"stream_name", "time", "data"}). Lines look like '[<system>] {"step": ..., "dev_wer_greedy": ...}'."""
+    items = json.loads(Path(path).read_text(encoding="utf-8"))
+    text = "".join(i.get("data", "") for i in items)
+    evals = []
+    for line in text.splitlines():
+        prefix = f"[{system}] "
+        if line.startswith(prefix) and line[len(prefix):].startswith('{"step"'):
+            evals.append(json.loads(line[len(prefix):]))
+    if not evals:
+        raise SystemExit(f"no dev evaluations of {system} in {path}")
+    return evals
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--system", required=True)
@@ -184,7 +201,13 @@ def main() -> None:
     ap.add_argument("--limit-eval", type=int, default=None, help="first N dev/test/silence clips, for a trial run")
     ap.add_argument("--prepare-only", action="store_true",
                     help="only decode the audio to work/wav16k (run once before fine-tuning two systems in parallel)")
+    ap.add_argument("--from-trained", default=None,
+                    help="skip training: the best weights that an earlier run of this script saved (work/models/<system>/best)")
+    ap.add_argument("--trained-log", default=None,
+                    help="with --from-trained: the Kaggle log of that run; its dev evaluations become the training log")
     args = ap.parse_args()
+    if bool(args.from_trained) != bool(args.trained_log):
+        raise SystemExit("--from-trained and --trained-log go together")
     out_dir = Path(args.out_dir)
     trial = bool(args.max_steps or args.limit_train or args.limit_eval or args.base_dir)
     if trial and out_dir.resolve() == (ROOT / "results").resolve():
@@ -246,7 +269,13 @@ def main() -> None:
         losses.clear()
         print(json.dumps(entry), flush=True)
 
-    done = False
+    if args.from_trained:
+        # Decoding only: the weights and the dev evaluations come from an earlier training run of this script.
+        log["evals"] = evals_from_kaggle_log(Path(args.trained_log), args.system)
+        log["trained_in"] = {"weights": str(args.from_trained), "kaggle_log": Path(args.trained_log).as_posix()}
+        step = log["evals"][-1]["step"]
+        best_wer = min(e["dev_wer_greedy"] for e in log["evals"] if e.get("saved"))
+    done = bool(args.from_trained)
     while not done:
         batches = sysobj.batches(stores["train"], rng)
         batches = batches[: len(batches) // accum * accum]        # whole optimizer steps only
@@ -279,9 +308,16 @@ def main() -> None:
             if step % tc["eval_every_steps"] == 0:
                 evaluate(final=False)
 
-    sysobj.load(work / "best")
+    sysobj.load(Path(args.from_trained) if args.from_trained else work / "best")
     chosen_step = max((e for e in log["evals"] if e.get("saved")), key=lambda e: e["step"])["step"]
     log["chosen_step"], log["chosen_dev_wer_greedy"] = chosen_step, best_wer
+    if args.from_trained:
+        # the loaded weights must be the chosen checkpoint: greedy dev WER again, as the training run logged it
+        check = dev_wer(sysobj, stores["dev"], device, {})
+        log["chosen_dev_wer_greedy_recomputed"] = check
+        print(json.dumps({"recomputed_dev_wer_greedy": check, "logged": best_wer}), flush=True)
+        if abs(check - best_wer) > 0.002:
+            raise SystemExit(f"the weights in {args.from_trained} do not give the logged dev WER ({check} vs {best_wer})")
 
     grid = m.get("dev_search") or {}
     keys = sorted(grid)
@@ -309,6 +345,7 @@ def main() -> None:
         "checkpoint": None, "base_checkpoint": m["base"], "base_revision": sha, "revision": None,
         "language": m["language"], "decoding": opts or {"decoding": "greedy"}, "train_settings": tc,
         "model_settings": m.get("model"), "chosen_step": chosen_step, "steps_run": step,
+        "trained_in": log.get("trained_in"),   # set when this run only decoded the weights of an earlier training run
         "gpu": torch.cuda.get_device_name(0) if device == "cuda" else "cpu",
         "precision": "fp16 mixed (torch.autocast)" if device == "cuda" else "fp32",
         "batch_size": (f"{tc['batch_size']} clips" if "batch_size" in tc else f"up to {tc['max_samples']} padded samples")
