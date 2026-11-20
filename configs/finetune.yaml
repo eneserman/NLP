@@ -39,7 +39,8 @@ models:
       mask_time_prob: 0.05
       ctc_loss_reduction: mean
     train:
-      epochs: 15
+      epochs: 8                   # about 2 s per optimizer step on a T4 (Kaggle trial): 8 epochs fit the 6 h budget,
+                                  # so the learning rate reaches the end of its schedule
       max_samples: 1600000        # padded samples per batch (100 s of audio)
       grad_accum: 2               # so one optimizer step still sees 200 s of audio
       gradient_checkpointing: true
