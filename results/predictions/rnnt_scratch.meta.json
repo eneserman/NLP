@@ -1,0 +1,77 @@
+{
+  "kind": "baseline",
+  "trained_by_us": true,
+  "system": "rnnt_scratch",
+  "family": "Neural: transducer (RNN-T)",
+  "setup": "Conformer 12x256 (19.5 M parameters), characters, trained from scratch on our train split, epoch 29 chosen on dev",
+  "checkpoint": null,
+  "revision": null,
+  "language": "Croatian only (trained on our data)",
+  "model_type": "rnnt",
+  "encoder": {
+    "n_mels": 80,
+    "d_model": 256,
+    "n_layers": 12,
+    "heads": 4,
+    "ff": 1024,
+    "kernel": 15,
+    "dropout": 0.1,
+    "time_stride": 4
+  },
+  "decoder": null,
+  "transducer": {
+    "pred_embed": 256,
+    "pred_hidden": 320,
+    "pred_layers": 1,
+    "joint_hidden": 320,
+    "dropout": 0.1
+  },
+  "decoding": {},
+  "features": "logmel",
+  "train_settings": {
+    "epochs": 40,
+    "max_frames": 12000,
+    "max_items": 64,
+    "peak_lr": 0.0015,
+    "warmup_steps": 4000,
+    "weight_decay": 0.001,
+    "grad_clip": 5.0,
+    "spec_augment": true,
+    "eval_every": 2,
+    "max_hours": 6.0
+  },
+  "epochs_run": 29,
+  "chosen_epoch": 29,
+  "params": 19537829,
+  "gpu": "Tesla T4",
+  "precision": "fp16 mixed (torch.autocast)",
+  "batch_size": "up to 12000 padded frames",
+  "audio_seconds": 23822.8,
+  "compute_seconds": 170.49,
+  "timing_split": "test",
+  "timing_note": "model forward and decoding on precomputed log-mel features",
+  "timing": {
+    "dev": {
+      "clips": 2254,
+      "audio_seconds": 22749.66,
+      "compute_seconds": 149.29
+    },
+    "test": {
+      "clips": 2021,
+      "audio_seconds": 23822.8,
+      "compute_seconds": 170.49
+    },
+    "silence": {
+      "clips": 60,
+      "audio_seconds": 358.31,
+      "compute_seconds": 0.93
+    }
+  },
+  "seed": 20261119,
+  "versions": {
+    "python": "3.13.16",
+    "torch": "2.11.0+cu130",
+    "numpy": "2.4.4"
+  },
+  "trial": false
+}
