@@ -16,5 +16,8 @@ train:
 
 # decoding settings chosen on dev (grid), then used once on test
 dev_search:
-  lm_weight: [2.0, 5.0, 10.0, 15.0]
-  ins_penalty: [0.0, -10.0, -20.0]
+  # A first run searched lm_weight 2-15 and ins_penalty 0 to -20: the best dev WER was at the edge of that
+  # grid (lm_weight 15, ins_penalty 0), with far fewer words than the references. So the grid goes further
+  # on both sides (a positive ins_penalty is a bonus for each new character). Chosen on dev only.
+  lm_weight: [5.0, 10.0, 15.0, 20.0, 30.0, 40.0]
+  ins_penalty: [-10.0, 0.0, 10.0, 20.0]

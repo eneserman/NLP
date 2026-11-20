@@ -165,6 +165,6 @@ def test_train_gmm_hmm_script_end_to_end(tmp_path):
     pred = tmp_path / "results" / "predictions"
     assert len((pred / "gmm_hmm.test.jsonl").read_text(encoding="utf-8").splitlines()) == 2
     meta = json.loads((pred / "gmm_hmm.meta.json").read_text(encoding="utf-8"))
-    assert meta["trained_by_us"] and meta["decoding"]["lm_weight"] in (2.0, 5.0, 10.0, 15.0)
+    assert meta["trained_by_us"] and meta["decoding"]["lm_weight"] in (5.0, 10.0, 15.0, 20.0, 30.0, 40.0)
     log = json.loads((tmp_path / "results" / "train_logs" / "gmm_hmm.json").read_text(encoding="utf-8"))
-    assert len(log["dev_search"]) == 12 and log["iterations"][-1]["gaussians"] == 16
+    assert len(log["dev_search"]) == 24 and log["iterations"][-1]["gaussians"] == 16
