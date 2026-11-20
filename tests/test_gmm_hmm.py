@@ -171,6 +171,7 @@ def test_train_gmm_hmm_script_end_to_end(tmp_path):
 
 
 def test_reads_an_earlier_run_from_its_kaggle_log(tmp_path):
+    pytest.importorskip("torch")          # scripts/train_gmm_hmm.py imports the feature code (torch)
     import importlib
     sys.path.insert(0, str(ROOT / "scripts"))
     t = importlib.import_module("train_gmm_hmm")
